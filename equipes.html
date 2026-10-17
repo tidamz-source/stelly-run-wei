@@ -113,6 +113,11 @@ document.documentElement.lang = LANG; document.title = 'Stelly Run · ' + T.titl
 const myId = (() => { try { return localStorage.getItem('stellyrunwei_id') || ''; } catch(e){ return ''; } })();
 
 function render(r){
+  // le score d'équipe est recalculé ici : moyenne des 3 meilleurs records (ou de ceux qui ont joué s'il y en a moins)
+  r.N = 3;
+  r.teams.forEach(t => { t.top = (t.top || []).slice().sort((a, b) => b.score - a.score).slice(0, 3); t.score = t.top.length ? Math.round(t.top.reduce((s, p) => s + p.score, 0) / t.top.length) : 0; });
+  r.teams.sort((a, b) => b.score - a.score || b.players - a.players);
+  r.teams.forEach(t => t.rank = t.players ? 1 + r.teams.filter(x => x.players && x.score > t.score).length : 0);
   $('rule').innerHTML = r.N ? f(T.rule, { n: r.N }) : T.rule0;
   const max = Math.max(1, ...r.teams.map(t => t.score));
   $('teams').innerHTML = r.teams.map(t => {
