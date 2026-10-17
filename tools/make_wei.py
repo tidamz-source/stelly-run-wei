@@ -96,7 +96,7 @@ man = json.loads((SRC / 'manifest.webmanifest').read_text(encoding='utf-8'))
 man.update({ 'name': 'Stelly Run · Équipes', 'short_name': 'Stelly Équipes', 'description': 'Stelly Run, édition équipes : chaque partie compte pour ton équipe !' })
 
 # ---------- garde-fous ----------
-if 'script.google.com' in idx: sys.exit('[wei] une URL du jeu officiel est restée dans index.html')
+if 'AKfycbwJCiKyJ7zyoGK7BEGem0crHldaZgvWSWcj6KE' in idx: sys.exit('[wei] l\'URL du classement du jeu officiel est restée dans index.html')
 if re.search(r"'stellyrun_", idx): sys.exit('[wei] clé de sauvegarde du jeu officiel restée')
 if shutil.which('node'):
     for name, code in [('index.html', max(re.findall(r'<script>(.*?)</script>', idx, re.S), key=len)), ('langues.js', lng)]:
