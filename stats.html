@@ -102,7 +102,7 @@ footer{ margin-top:30px; text-align:center; font-size:13px; color:var(--purple-l
 <script>
 (() => {
 'use strict';
-const WEI_URL = "https://script.google.com/macros/s/AKfycbweiRJpdwRb6tMPIQuWqw4oIlv56sKt1n9FPGcef_BCYc9jrfBt8fyiYTOh2-p3tASB/exec";
+const WEI_URL = "https://script.google.com/macros/s/AKfycbxkc6WIeFh6l9JiJNZJbhM2PDET4ZdB8MG7j7cRTZzkDpRcm-Kpuz39TwXzVeJzAwim/exec";
 const COL = { bleu:'#3FA3E0', rouge:'#E8384F', jaune:'#FFCF00', vert:'#3DBE5A' }, TEAMS = ['bleu', 'rouge', 'jaune', 'vert'];
 const L = (() => { try { return localStorage.getItem('stellyrunwei_lang') || ''; } catch(e){ return ''; } })();
 const LANG = LANGS[L] ? L : (LANGS[(navigator.language || 'fr').slice(0, 2)] ? (navigator.language || 'fr').slice(0, 2) : 'fr');
