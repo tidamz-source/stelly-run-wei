@@ -38,9 +38,7 @@ P = [
   # stats : envoyées au script des équipes, avec le nom et l'équipe du joueur (page stats.html)
   ("const d = TR.d, st = d.st, n = store('stellyrunwei_name');\n    return JSON.stringify(statsArchive({ name: n || '',",
    "const d = TR.d, st = d.st, wt = WEI.team();\n    return JSON.stringify(statsArchive({ name: WEI.name(), team: wt ? wt.id : '',", 'stats avec équipe'),
-  # trophées : pas de message pendant la partie (les disques sont quand même versés)
-  ("d.coins = (d.coins || 0) + n; toast(txt('tr.reward', { name: txt('tr.' + id + '.n'), n }), true); }",
-   "d.coins = (d.coins || 0) + n; if (state !== 'play') toast(txt('tr.reward', { name: txt('tr.' + id + '.n'), n }), true); }", 'trophées discrets en partie'),
+  # trophées : le jeu officiel n'affiche plus de message en pleine partie depuis la v7.2 (rien à faire ici)
   # défis du jour : pas dans cette édition (bouton masqué dans tools/wei.js, plus de progression ni de récompense)
   ('  function check(){\n    roll(); if (R.active) countHigh();', '  function check(){ return;\n    roll(); if (R.active) countHigh();', 'défis du jour coupés'),
   # chaque partie est envoyée au classement des équipes (plus de saisie de 3 lettres)
