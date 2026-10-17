@@ -1,0 +1,47 @@
+{
+  "name": "Stelly Run · Équipes",
+  "short_name": "Stelly Équipes",
+  "description": "Stelly Run, édition équipes : chaque partie compte pour ton équipe !",
+  "lang": "fr",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./index.html",
+  "display": "fullscreen",
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
+  "orientation": "landscape",
+  "background_color": "#2E0E30",
+  "theme_color": "#2E0E30",
+  "categories": [
+    "games",
+    "sports"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
