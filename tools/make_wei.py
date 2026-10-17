@@ -35,8 +35,14 @@ if 'const WEI_URL' not in idx: sys.exit('[wei] LB_URL introuvable')
 P = [
   ('<title>Stelly Run</title>', '<title>Stelly Run · Équipes</title>', 'titre'),
   ('<meta name="apple-mobile-web-app-title" content="Stelly Run">', '<meta name="apple-mobile-web-app-title" content="Stelly Équipes">', 'titre ios'),
-  # stats mondiales : rien n'est envoyé
-  ('  async function sendStats(){\n', '  async function sendStats(){ return;\n', 'stats mondiales coupées'),
+  # stats : envoyées au script des équipes, avec le nom et l'équipe du joueur (page stats.html)
+  ("const d = TR.d, st = d.st, n = store('stellyrunwei_name');\n    return JSON.stringify(statsArchive({ name: n || '',",
+   "const d = TR.d, st = d.st, wt = WEI.team();\n    return JSON.stringify(statsArchive({ name: WEI.name(), team: wt ? wt.id : '',", 'stats avec équipe'),
+  # trophées : pas de message pendant la partie (les disques sont quand même versés)
+  ("d.coins = (d.coins || 0) + n; toast(txt('tr.reward', { name: txt('tr.' + id + '.n'), n }), true); }",
+   "d.coins = (d.coins || 0) + n; if (state !== 'play') toast(txt('tr.reward', { name: txt('tr.' + id + '.n'), n }), true); }", 'trophées discrets en partie'),
+  # défis du jour : pas dans cette édition (bouton masqué dans tools/wei.js, plus de progression ni de récompense)
+  ('  function check(){\n    roll(); if (R.active) countHigh();', '  function check(){ return;\n    roll(); if (R.active) countHigh();', 'défis du jour coupés'),
   # chaque partie est envoyée au classement des équipes (plus de saisie de 3 lettres)
   ('if (score > (TR.d.lbBest || 0) && !AC.sus()) lbEntry.show(score, t, discCount); else lbEntry.hide();',
    'lbEntry.hide(); if (!AC.sus()) WEI.send(score, t, discCount);', 'envoi des scores'),
@@ -91,7 +97,7 @@ sw = (SRC / 'sw.js').read_text(encoding='utf-8')
 sw = re.sub(r"const VERSION = '[^']*';", f"const VERSION = 'stelly-run-wei-{APP}-{CFG['rev']}';", sw, count=1)
 # même domaine que le jeu officiel : on ne supprime que nos propres caches
 sw = once(sw, "keys.filter(k => k !== VERSION)", "keys.filter(k => k.startsWith('stelly-run-wei-') && k !== VERSION)", 'sw : caches')
-sw = once(sw, "  './index.html',\n", "  './index.html',\n  './equipes.html',\n", 'sw : equipes.html')
+sw = once(sw, "  './index.html',\n", "  './index.html',\n  './equipes.html',\n  './stats.html',\n", 'sw : equipes.html')
 man = json.loads((SRC / 'manifest.webmanifest').read_text(encoding='utf-8'))
 man.update({ 'name': 'Stelly Run · Équipes', 'short_name': 'Stelly Équipes', 'description': 'Stelly Run, édition équipes : chaque partie compte pour ton équipe !' })
 
@@ -114,6 +120,9 @@ fonts = '\n'.join(l for l in idx.split('\n') if l.startswith('@font-face'))
 eq = (HERE / 'equipes.src.html').read_text(encoding='utf-8')
 eq = once(eq, '/*FONTS*/', fonts, 'polices').replace("/*URL*/''", json.dumps(CFG['url']))
 (ROOT / 'equipes.html').write_text(eq, encoding='utf-8')
+st = (HERE / 'stats.src.html').read_text(encoding='utf-8')
+st = once(st, '/*FONTS*/', fonts, 'polices stats').replace("/*URL*/''", json.dumps(CFG['url']))
+(ROOT / 'stats.html').write_text(st, encoding='utf-8')
 for f in ['stelly.js', 'boutique.json', 'trophees.json', 'obstacles.json']: shutil.copy(SRC / f, ROOT / f)
 shutil.copytree(SRC / 'icons', ROOT / 'icons', dirs_exist_ok=True)
 print(f'[wei] édition équipes fabriquée depuis Stelly Run v{APP} (rev {CFG["rev"]}) · serveur : {CFG["url"] or "PAS ENCORE BRANCHÉ"}')

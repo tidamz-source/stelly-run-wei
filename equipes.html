@@ -22,6 +22,8 @@ h1{ margin:0; font-weight:700; font-size:clamp(26px, 4.4vw, 46px); color:var(--y
 h1 small{ display:block; font-size:.42em; color:#fff; -webkit-text-stroke:0; text-shadow:none; opacity:.75; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
 .btn{ font:inherit; font-weight:700; font-size:16px; cursor:pointer; text-decoration:none; color:var(--plum); background:var(--yellow); border:3px solid var(--plum); border-radius:6px;
   padding:8px 18px 10px; box-shadow:inset 0 -5px 0 var(--orange), inset 0 3px 0 var(--yellow-l), 0 5px 0 #000; display:inline-block; }
+.nav{ display:flex; gap:10px; flex-wrap:wrap; }
+.btn.alt{ background:#fff; box-shadow:inset 0 -5px 0 #CFC6DA, 0 5px 0 #000; }
 .btn:active{ transform:translateY(4px); box-shadow:inset 0 -5px 0 var(--orange), 0 1px 0 #000; }
 .rule{ margin:14px 0 18px; padding:10px 14px; border-radius:8px; background:rgba(255,255,255,.07); border:2px solid rgba(255,255,255,.12); font-size:15px; line-height:1.35; color:#EADCF2; }
 .rule b{ color:var(--yellow); }
@@ -70,7 +72,7 @@ footer{ margin-top:20px; text-align:center; font-size:13px; color:var(--purple-l
 <div class="wrap">
   <header>
     <h1><small>Stelly Run</small><span id="h1">Résultats des équipes</span></h1>
-    <a class="btn" href="index.html" id="play">Jouer</a>
+    <div class="nav"><a class="btn alt" href="stats.html" id="sts">Stats</a><a class="btn" href="index.html" id="play">Jouer</a></div>
   </header>
   <p class="rule" id="rule"></p>
   <div class="grid">
@@ -86,17 +88,17 @@ const COL = { bleu:'#3FA3E0', rouge:'#E8384F', jaune:'#FFCF00', vert:'#3DBE5A' }
 const L = (() => { try { return localStorage.getItem('stellyrunwei_lang') || ''; } catch(e){ return ''; } })();
 const LANG = ['fr', 'en', 'es'].includes(L) ? L : ((navigator.language || 'fr').slice(0, 2) === 'es' ? 'es' : ((navigator.language || 'fr').slice(0, 2) === 'en' ? 'en' : 'fr'));
 const T = {
-  fr:{ title:'Résultats des équipes', play:'Jouer', top:'Top 10 des joueurs', team:'Équipe {t}', t:{ bleu:'Bleue', rouge:'Rouge', jaune:'Jaune', vert:'Verte' },
+  fr:{ title:'Résultats des équipes', play:'Jouer', sts:'Stats', top:'Top 10 des joueurs', team:'Équipe {t}', t:{ bleu:'Bleue', rouge:'Rouge', jaune:'Jaune', vert:'Verte' },
     rule:'Pour que ce soit juste entre petites et grandes équipes, on compare la <b>moyenne des {n} meilleurs records</b> de chaque équipe (s’il y a moins de {n} joueurs, la moyenne de ceux qui ont joué).',
     rule0:'Le classement démarre dès la première partie jouée. On compare la <b>moyenne des meilleurs records</b> de chaque équipe, à nombre de joueurs égal.',
     avg:'moyenne top {k}', players:'{n} joueurs', player:'{n} joueur', games:'{n} parties', game:'{n} partie', points:'{n} pts au total', best:'Meilleur :', none:'Pas encore de joueur',
     tp:'joueurs', tg:'parties jouées', you:'toi', upd:'Mis à jour à {h} · actualisation automatique', off:'Résultats indisponibles pour le moment. Nouvel essai dans quelques secondes…', notset:'Le classement n’est pas encore branché.' },
-  en:{ title:'Team results', play:'Play', top:'Top 10 players', team:'Team {t}', t:{ bleu:'Blue', rouge:'Red', jaune:'Yellow', vert:'Green' },
+  en:{ title:'Team results', play:'Play', sts:'Stats', top:'Top 10 players', team:'Team {t}', t:{ bleu:'Blue', rouge:'Red', jaune:'Yellow', vert:'Green' },
     rule:'To keep it fair between small and big teams, we compare the <b>average of the top {n} scores</b> of each team (with fewer than {n} players, the average of those who played).',
     rule0:'The ranking starts with the first run. We compare the <b>average of the best scores</b> of each team, with the same number of players.',
     avg:'top {k} average', players:'{n} players', player:'{n} player', games:'{n} runs', game:'{n} run', points:'{n} pts in total', best:'Best:', none:'No player yet',
     tp:'players', tg:'runs played', you:'you', upd:'Updated at {h} · auto refresh', off:'Results unavailable right now. Retrying in a few seconds…', notset:'The ranking is not connected yet.' },
-  es:{ title:'Resultados de los equipos', play:'Jugar', top:'Top 10 de jugadores', team:'Equipo {t}', t:{ bleu:'Azul', rouge:'Roja', jaune:'Amarilla', vert:'Verde' },
+  es:{ title:'Resultados de los equipos', play:'Jugar', sts:'Estadísticas', top:'Top 10 de jugadores', team:'Equipo {t}', t:{ bleu:'Azul', rouge:'Roja', jaune:'Amarilla', vert:'Verde' },
     rule:'Para que sea justo entre equipos pequeños y grandes, se compara la <b>media de los {n} mejores récords</b> de cada equipo (con menos de {n} jugadores, la media de los que han jugado).',
     rule0:'La clasificación empieza con la primera partida. Se compara la <b>media de los mejores récords</b> de cada equipo, con el mismo número de jugadores.',
     avg:'media top {k}', players:'{n} jugadores', player:'{n} jugador', games:'{n} partidas', game:'{n} partida', points:'{n} pts en total', best:'Mejor:', none:'Aún sin jugadores',
@@ -106,7 +108,7 @@ const f = (s, v) => s.replace(/\{(\w+)\}/g, (_, k) => v[k]);
 const N = n => Number(n || 0).toLocaleString({ fr:'fr-FR', en:'en-GB', es:'es-ES' }[LANG]).replace(/ | /g, ' ');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' })[c]);
 const $ = id => document.getElementById(id);
-document.documentElement.lang = LANG; document.title = 'Stelly Run · ' + T.title; $('h1').textContent = T.title; $('play').textContent = T.play; $('h2top').textContent = T.top;
+document.documentElement.lang = LANG; document.title = 'Stelly Run · ' + T.title; $('h1').textContent = T.title; $('play').textContent = T.play; $('sts').textContent = T.sts; $('h2top').textContent = T.top;
 const myId = (() => { try { return localStorage.getItem('stellyrunwei_id') || ''; } catch(e){ return ''; } })();
 
 function render(r){

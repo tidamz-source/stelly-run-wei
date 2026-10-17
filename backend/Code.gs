@@ -11,10 +11,13 @@
  * Classement : moyenne des 3 meilleurs records de chaque équipe (TOP_N).
  * Une équipe qui a moins de 3 joueurs : moyenne de ceux qu'elle a.
  * Le record d'un joueur le suit s'il change d'équipe.
+ * Stats d'équipe (page stats.html) : compteurs de chaque joueur (onglet « Stats »), additionnés par équipe.
  */
 const SECRET = 'wei-st3lly-4q8z';   // même clé que dans index.html (WEI_SECRET)
 const TEAMS = ['bleu', 'rouge', 'jaune', 'vert'];
 const TOP_N = 3;   // nombre de meilleurs records comptés par équipe
+const STATS_SECRET = 'lg-st3lly-9f2k';   // clé des stats envoyées par le jeu
+const SUM = ['games', 'discs', 'rb', 'spent', 'sharks', 'ko', 'doe', 'stag', 'dist', 'missed', 'fires', 'socks', 'slows', 'time', 'combo', 'superC', 'mega', 'giga'];
 const COLS = ['id', 'name', 'team', 'best', 'bestT', 'bestDiscs', 'games', 'total', 'created', 'updated'];
 
 function cyrb53(str, seed) {
@@ -33,6 +36,7 @@ function sheet_(name, head) {
   return sh;
 }
 const players_ = () => sheet_('Joueurs', COLS);
+const stats_ = () => sheet_('Stats', ['id', 'name', 'team', 'json', 'updated']);
 const runs_ = () => sheet_('Parties', ['date', 'id', 'name', 'team', 'score', 'secondes', 'disques', 'version']);
 
 function json_(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
@@ -48,6 +52,7 @@ function writeRow_(sh, r) { sh.getRange(r.row, 1, 1, COLS.length).setValues([COL
 
 function doPost(e) {
   let o; try { o = JSON.parse(e.postData.contents); } catch (err) { return json_({ ok: false, err: 'json' }); }
+  if (o.action === 'stats') return json_(saveStats_(o));
   const id = String(o.id || '').slice(0, 40), name = cleanName_(o.name), team = String(o.team || '');
   if (!/^[a-z0-9]{6,40}$/.test(id) || !name || TEAMS.indexOf(team) < 0) return json_({ ok: false, err: 'bad' });
   const lock = LockService.getScriptLock(); lock.waitLock(20000);
@@ -78,6 +83,55 @@ function doPost(e) {
     }
     return json_({ ok: false, err: 'action' });
   } finally { lock.releaseLock(); }
+}
+
+// compteurs d'un joueur (dernier état seulement : le jeu envoie ses totaux)
+function saveStats_(o) {
+  const id = String(o.id || '').slice(0, 40), payload = String(o.payload || '');
+  if (!/^[a-z0-9]{6,40}$/.test(id) || payload.length > 20000) return { ok: false, err: 'bad' };
+  if (o.sig !== cyrb53(id + '|' + payload + '|' + STATS_SECRET)) return { ok: false, err: 'sig' };
+  let p; try { p = JSON.parse(payload); } catch (e) { return { ok: false, err: 'json' }; }
+  const name = cleanName_(p.name), team = String(p.team || '');
+  if (!name || TEAMS.indexOf(team) < 0) return { ok: false, err: 'bad' };
+  const lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    const sh = stats_(), v = sh.getDataRange().getValues();
+    let row = 0; for (let i = 1; i < v.length; i++) if (v[i][0] === id) { row = i + 1; break; }
+    const line = [id, name, team, payload, new Date()];
+    if (row) sh.getRange(row, 1, 1, line.length).setValues([line]); else sh.appendRow(line);
+    return { ok: true };
+  } finally { lock.releaseLock(); }
+}
+
+// page des stats : totaux par équipe, cimetière, hall of fame, classement individuel complet
+function teamStats_() {
+  const { rows } = readAll_(), teamOf = {}, best = {};
+  rows.forEach(r => { teamOf[r.id] = r.team; best[r.id] = +r.best || 0; });
+  const v = stats_().getDataRange().getValues(), P = [];
+  for (let i = 1; i < v.length; i++) {
+    let p; try { p = JSON.parse(v[i][3]); } catch (e) { continue; }
+    const id = v[i][0], team = teamOf[id] || v[i][2]; if (TEAMS.indexOf(team) < 0) continue;
+    p.morts = Object.keys(p.deathBy || {}).reduce((s, k) => s + (+p.deathBy[k] || 0), 0);
+    p.score = Math.max(best[id] || 0, +p.best || 0);
+    P.push({ id, name: cleanName_(rows.find(r => r.id === id) ? rows.find(r => r.id === id).name : v[i][1]), team, p });
+  }
+  const blank = () => { const o = { players: 0, streak: 0, morts: 0 }; SUM.forEach(k => o[k] = 0); return o; };
+  const totals = blank(), teams = {}, deathBy = {}, deathTh = {};
+  TEAMS.forEach(t => teams[t] = blank());
+  P.forEach(({ team, p }) => {
+    for (const o of [totals, teams[team]]) {
+      o.players++; SUM.forEach(k => o[k] += +p[k] || 0); o.streak = Math.max(o.streak, +p.streak || 0); o.morts += p.morts;
+    }
+    for (const k in p.deathBy || {}) deathBy[k] = (deathBy[k] || 0) + (+p.deathBy[k] || 0);
+    for (const k in p.deathTh || {}) deathTh[k] = (deathTh[k] || 0) + (+p.deathTh[k] || 0);
+  });
+  const leaders = {};
+  ['score', 'streak', 'discs', 'games', 'dist', 'ko', 'morts', 'missed', 'rb', 'giga', 'time'].forEach(k => {
+    leaders[k] = P.filter(x => (+x.p[k] || 0) > 0).sort((a, b) => (+b.p[k] || 0) - (+a.p[k] || 0)).slice(0, 5).map(x => ({ name: x.name, team: x.team, v: +x.p[k] || 0 }));
+  });
+  const ranking = rows.filter(r => +r.best > 0).sort((a, b) => b.best - a.best)
+    .map((r, i) => ({ rank: i + 1, name: r.name, team: r.team, score: +r.best, games: +r.games || 0 }));
+  return { ok: true, players: P.length, totals, teams, deathBy, deathTh, leaders, ranking, updated: Date.now() };
 }
 
 function meOf_(id) { const res = results_(id); return { me: res.me, teams: res.teams, N: res.N }; }
@@ -111,6 +165,7 @@ function results_(id) {
 }
 
 function doGet(e) {
+  if (e && e.parameter && e.parameter.view === 'stats') return json_(teamStats_());
   const id = String((e && e.parameter && e.parameter.id) || '').slice(0, 40);
   return json_(results_(id));
 }

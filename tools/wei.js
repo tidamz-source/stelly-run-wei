@@ -53,7 +53,8 @@ const WEI = (() => {
     + '.weiset .chip{ display:flex; align-items:center; gap:calc(var(--s)*2px); padding:calc(var(--s)*2px) calc(var(--s)*4px); border-radius:calc(var(--s)*2.5px); border:calc(var(--s)*1.2px) solid var(--plum); background:#fff; color:var(--plum); font-weight:700; font-size:max(calc(var(--s)*5px),11px); }'
     + '.weiset .chip i{ width:calc(var(--s)*7px); height:calc(var(--s)*7px); border-radius:calc(var(--s)*1.5px); border:calc(var(--s)*1px) solid var(--plum); }'
     + '.weiset .btn{ font-size:max(calc(var(--s)*5.5px),11px); padding:calc(var(--s)*1.5px) calc(var(--s)*5px) calc(var(--s)*2.5px); }'
-    + '#settings .xh, #settings .xsub, #settings .xrow, #xsync, #xunlink{ display:none !important; }';
+    + '#settings .xh, #settings .xsub, #settings .xrow, #xsync, #xunlink, #dqbtn{ display:none !important; }'
+    + '#install{ top:calc(var(--s)*22px) !important; }';   // sous l'étiquette d'équipe
   document.head.appendChild(css);
 
   // ---------- écran de choix ----------

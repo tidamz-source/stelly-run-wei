@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stelly Run · Stats des équipes</title>
+<meta name="theme-color" content="#2E0E30">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<style>
+/*FONTS*/
+:root{ --plum:#2E0E30; --plum2:#43184A; --plum3:#5C3D63; --line:rgba(255,255,255,.12); --yellow:#FFCF00; --yellow-l:#FFE777; --orange:#F29318; --purple-l:#A58BC6;
+  --cream:#FFF4D6; --cream-d:#EBD8A6; --num:'Press Start 2P','Courier New',monospace; --txt:'Pixelify Sans',system-ui,sans-serif; }
+*{ box-sizing:border-box; }
+html,body{ margin:0; background:var(--plum); color:#fff; font-family:var(--txt); font-weight:500; }
+body{ background:repeating-linear-gradient(135deg, rgba(255,255,255,.03) 0 14px, transparent 0 28px), radial-gradient(ellipse at 50% -10%, #5A2260 0%, var(--plum) 60%) fixed; }
+.wrap{ max-width:1180px; margin:0 auto; padding:max(16px, env(safe-area-inset-top)) 16px 40px; }
+header{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+h1{ margin:0; font-weight:700; font-size:clamp(26px, 4.4vw, 46px); color:var(--yellow); -webkit-text-stroke:4px var(--plum); paint-order:stroke fill; text-shadow:0 3px 0 var(--orange), 0 5px 0 #000; line-height:1.05; }
+h1 small{ display:block; font-size:.42em; color:#fff; -webkit-text-stroke:0; text-shadow:none; opacity:.75; letter-spacing:.08em; text-transform:uppercase; margin-bottom:4px; }
+.nav{ display:flex; gap:10px; flex-wrap:wrap; }
+.btn{ font:inherit; font-weight:700; font-size:16px; cursor:pointer; text-decoration:none; color:var(--plum); background:var(--yellow); border:3px solid var(--plum); border-radius:6px;
+  padding:8px 16px 10px; box-shadow:inset 0 -5px 0 var(--orange), inset 0 3px 0 var(--yellow-l), 0 5px 0 #000; display:inline-block; }
+.btn.alt{ background:#fff; box-shadow:inset 0 -5px 0 #CFC6DA, 0 5px 0 #000; }
+.btn:active{ transform:translateY(4px); }
+.meta{ margin:10px 0 0; font-size:13px; color:var(--purple-l); }
+h2{ margin:36px 0 14px; font-size:clamp(20px, 3vw, 26px); font-weight:700; display:flex; align-items:center; gap:10px; }
+h2::before{ content:''; width:8px; height:22px; border-radius:2px; background:var(--yellow); box-shadow:0 3px 0 #000; }
+.hero{ display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-top:20px; }
+.big{ background:var(--cream); color:var(--plum); border:3px solid #000; border-radius:10px; padding:18px 18px 16px; box-shadow:0 5px 0 #000; }
+.big b{ display:block; font-family:var(--num); font-size:clamp(18px, 2.6vw, 26px); color:#C9690E; line-height:1.2; }
+.big span{ display:block; margin-top:8px; font-weight:700; font-size:15px; color:var(--plum3); }
+/* duel des équipes */
+.duel{ overflow-x:auto; border-radius:10px; border:3px solid #000; box-shadow:0 5px 0 #000; background:var(--plum2); }
+table{ border-collapse:collapse; width:100%; min-width:640px; }
+th, td{ padding:10px 12px; text-align:right; border-bottom:1px solid var(--line); white-space:nowrap; }
+th:first-child, td:first-child{ text-align:left; position:sticky; left:0; background:var(--plum2); z-index:1; font-family:var(--txt); font-size:15px; font-weight:700; color:#EADCF2; }
+thead th{ position:relative; font-size:17px; font-weight:700; color:#fff; padding-top:14px; border-bottom:3px solid #000; }
+thead th i{ display:inline-block; width:14px; height:14px; border-radius:3px; border:2px solid #000; background:var(--c); margin-right:8px; vertical-align:-1px; }
+thead th.t::after{ content:''; position:absolute; left:0; right:0; top:0; height:6px; background:var(--c); }
+td{ font-family:var(--num); font-size:12px; color:#fff; }
+td .v{ position:relative; z-index:1; }
+td.win{ color:var(--yellow); }
+td.win .v::before{ content:'★ '; font-family:var(--txt); font-size:14px; }
+td .b{ display:block; height:4px; margin-top:6px; margin-left:auto; border-radius:2px; background:var(--c); opacity:.8; }
+tbody tr:last-child td{ border-bottom:0; }
+/* cimetière */
+.cols{ display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:16px; }
+@media (max-width:760px){ .cols{ grid-template-columns:1fr; } }
+.card{ background:var(--cream); color:var(--plum); border:3px solid #000; border-radius:10px; padding:16px 18px 18px; box-shadow:0 5px 0 #000; }
+.card h3{ margin:0 0 6px; font-size:19px; font-weight:700; }
+.bar{ display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center; margin:10px 0 0; font-weight:700; font-size:15px; }
+.bar em{ font-style:normal; font-family:var(--num); font-size:11px; color:var(--plum3); }
+.bar i{ grid-column:1 / -1; height:8px; border-radius:4px; background:linear-gradient(90deg, var(--orange), var(--yellow)); }
+.fatal{ margin-top:14px; padding-top:10px; border-top:2px solid var(--cream-d); font-size:14px; color:var(--plum3); }
+/* hall of fame */
+.fame{ display:grid; grid-template-columns:repeat(auto-fill, minmax(250px, 1fr)); gap:14px; }
+.fcard{ background:var(--plum2); border:3px solid #000; border-radius:10px; padding:14px 14px 10px; box-shadow:0 5px 0 #000; }
+.fcard h3{ margin:0; font-size:19px; font-weight:700; color:var(--yellow); }
+.fcard p{ margin:2px 0 10px; font-size:13px; color:var(--purple-l); }
+.fcard ol{ list-style:none; margin:0; padding:0; }
+.fcard li{ display:grid; grid-template-columns:24px 12px 1fr auto; align-items:center; gap:8px; padding:6px 8px; border-radius:6px; font-weight:700; font-size:15px; }
+.fcard li:first-child{ background:rgba(255,207,0,.12); }
+.fcard .rk{ font-family:var(--num); font-size:10px; color:var(--purple-l); text-align:right; }
+.fcard li:first-child .rk{ color:var(--yellow); }
+.dot{ width:12px; height:12px; border-radius:3px; border:2px solid #000; background:var(--c); }
+.fcard .nm{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.fcard .v{ font-family:var(--num); font-size:10px; color:var(--yellow-l); }
+/* classement individuel */
+.chips{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+.chips button{ font:inherit; font-weight:700; font-size:15px; cursor:pointer; color:#fff; background:var(--plum2); border:2px solid var(--line); border-radius:999px; padding:6px 14px; display:flex; align-items:center; gap:8px; }
+.chips .note{ align-self:center; font-size:13px; color:var(--purple-l); }
+.chips button.on{ background:#fff; color:var(--plum); border-color:#fff; }
+.rank{ display:flex; flex-direction:column; gap:6px; }
+.row{ display:grid; grid-template-columns:44px 14px minmax(0, 1fr) auto auto; gap:12px; align-items:center; padding:9px 14px; border-radius:8px; background:rgba(255,255,255,.06); border:2px solid transparent; font-size:16px; }
+.row .n{ font-family:var(--num); font-size:12px; color:var(--purple-l); text-align:right; }
+.row.r1 .n, .row.r2 .n, .row.r3 .n{ color:var(--yellow); }
+.row .p{ font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.row .g{ font-size:13px; color:var(--purple-l); }
+.row .s{ font-family:var(--num); font-size:12px; color:var(--yellow); min-width:90px; text-align:right; }
+.row.me{ border-color:var(--yellow); background:rgba(255,207,0,.12); }
+.empty, .msg{ color:var(--purple-l); font-size:16px; padding:8px 2px; }
+.msg{ margin:70px auto; text-align:center; font-size:18px; }
+@media (max-width:600px){ .hero{ grid-template-columns:1fr 1fr; gap:10px; } .big{ padding:12px; } .big b{ font-size:15px; } .big span{ font-size:13px; }
+  table{ min-width:500px; } th, td{ padding:8px 8px; } td:first-child{ white-space:normal; min-width:104px; font-size:13px; } thead th{ font-size:14px; } td{ font-size:10px; }
+  .row{ grid-template-columns:30px 12px minmax(0, 1fr) auto; } .row .g{ display:none; } }
+footer{ margin-top:30px; text-align:center; font-size:13px; color:var(--purple-l); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><small>Stelly Run</small><span id="h1">Stats des équipes</span></h1>
+    <div class="nav"><a class="btn alt" href="equipes.html" id="res">Résultats</a><a class="btn" href="index.html" id="play">Jouer</a></div>
+  </header>
+  <p class="meta" id="meta"></p>
+  <main id="main"><p class="msg">…</p></main>
+  <footer id="foot">© Lutèce Games</footer>
+</div>
+<script src="langues.js"></script>
+<script>
+(() => {
+'use strict';
+const WEI_URL = /*URL*/'';
+const COL = { bleu:'#3FA3E0', rouge:'#E8384F', jaune:'#FFCF00', vert:'#3DBE5A' }, TEAMS = ['bleu', 'rouge', 'jaune', 'vert'];
+const L = (() => { try { return localStorage.getItem('stellyrunwei_lang') || ''; } catch(e){ return ''; } })();
+const LANG = LANGS[L] ? L : (LANGS[(navigator.language || 'fr').slice(0, 2)] ? (navigator.language || 'fr').slice(0, 2) : 'fr');
+const myId = (() => { try { return localStorage.getItem('stellyrunwei_id') || ''; } catch(e){ return ''; } })();
+const PAGE = {
+  title:{ fr:'Stats des équipes', en:'Team stats', es:'Estadísticas de los equipos' },
+  res:{ fr:'Résultats', en:'Results', es:'Resultados' }, play:{ fr:'Jouer', en:'Play', es:'Jugar' },
+  meta:{ fr:'{n} joueurs · mis à jour à {t}', en:'{n} players · updated at {t}', es:'{n} jugadores · actualizado a las {t}' },
+  t:{ fr:{ bleu:'Bleue', rouge:'Rouge', jaune:'Jaune', vert:'Verte' }, en:{ bleu:'Blue', rouge:'Red', jaune:'Yellow', vert:'Green' }, es:{ bleu:'Azul', rouge:'Roja', jaune:'Amarilla', vert:'Verde' } },
+  duel:{ fr:'Le duel des équipes', en:'Team face-off', es:'El duelo de equipos' },
+  per:{ fr:'Par joueur', en:'Per player', es:'Por jugador' }, tot:{ fr:'Total', en:'Total', es:'Total' },
+  perNote:{ fr:'Moyenne par joueur : la taille de l’équipe ne compte pas.', en:'Average per player: team size doesn’t matter.', es:'Media por jugador: el tamaño del equipo no cuenta.' },
+  players:{ fr:'Joueurs', en:'Players', es:'Jugadores' }, streak:{ fr:'Meilleure série', en:'Best streak', es:'Mejor racha' },
+  time:{ fr:'Temps de jeu', en:'Time played', es:'Tiempo de juego' }, morts:{ fr:'Morts', en:'Deaths', es:'Muertes' },
+  grave:{ fr:'Le cimetière', en:'The graveyard', es:'El cementerio' }, deaths:{ fr:'Morts par cause', en:'Deaths by cause', es:'Muertes por causa' },
+  terr:{ fr:'Morts par terrain', en:'Deaths by terrain', es:'Muertes por terreno' }, total:{ fr:'morts au total', en:'deaths in total', es:'muertes en total' },
+  fame:{ fr:'Hall of Fame', en:'Hall of Fame', es:'Salón de la fama' },
+  rank:{ fr:'Classement individuel', en:'Individual ranking', es:'Clasificación individual' }, all:{ fr:'Tous', en:'All', es:'Todos' },
+  games:{ fr:'{n} parties', en:'{n} runs', es:'{n} partidas' }, game:{ fr:'{n} partie', en:'{n} run', es:'{n} partida' }, you:{ fr:'toi', en:'you', es:'tú' },
+  nobody:{ fr:'Personne pour l’instant', en:'Nobody yet', es:'Nadie por ahora' },
+  empty:{ fr:'Aucune stat pour l’instant : joue une partie pour lancer le compteur !', en:'No stats yet: play a run to get things started!', es:'Aún no hay estadísticas: ¡juega una partida para empezar!' },
+  error:{ fr:'Stats indisponibles pour le moment. Nouvel essai dans un instant…', en:'Stats unavailable right now. Retrying in a moment…', es:'Estadísticas no disponibles por ahora. Nuevo intento en un momento…' },
+  notset:{ fr:'Le classement n’est pas encore branché.', en:'The ranking is not connected yet.', es:'La clasificación aún no está conectada.' }
+};
+const FAME = [
+  ['score', { fr:'Meilleurs scores', en:'Top scores', es:'Mejores puntuaciones' }, { fr:'record personnel', en:'personal best', es:'récord personal' }],
+  ['streak', { fr:'Mains d’or', en:'Golden Hands', es:'Manos de oro' }, { fr:'plus longue série de frisbees', en:'longest frisbee streak', es:'racha de frisbees más larga' }],
+  ['discs', { fr:'Aspirateur à frisbees', en:'Frisbee Vacuum', es:'Aspiradora de frisbees' }, { fr:'frisbees attrapés', en:'frisbees caught', es:'frisbees atrapados' }],
+  ['games', { fr:'Accro', en:'Hooked', es:'Enganchado' }, { fr:'parties jouées', en:'runs played', es:'partidas jugadas' }],
+  ['dist', { fr:'Marathonien', en:'Marathon Runner', es:'Maratonista' }, { fr:'distance parcourue', en:'distance run', es:'distancia recorrida' }],
+  ['ko', { fr:'Chasseur d’oiseaux', en:'Bird Hunter', es:'Cazador de pájaros' }, { fr:'oiseaux assommés', en:'birds knocked out', es:'pájaros noqueados' }],
+  ['morts', { fr:'Cascadeur', en:'Stunt Double', es:'Doble de riesgo' }, { fr:'morts', en:'deaths', es:'muertes' }],
+  ['missed', { fr:'Mains en beurre', en:'Butterfingers', es:'Manos de mantequilla' }, { fr:'frisbees ratés', en:'frisbees missed', es:'frisbees fallados' }],
+  ['rb', { fr:'Chasseur d’arc-en-ciel', en:'Rainbow Hunter', es:'Cazador de arcoíris' }, { fr:'frisbees arc-en-ciel', en:'rainbow frisbees', es:'frisbees arcoíris' }],
+  ['giga', { fr:'Giga-joueur', en:'Giga Player', es:'Giga jugador' }, { fr:'giga combos', en:'giga combos', es:'giga combos' }],
+  ['time', { fr:'No Life', en:'No Life', es:'No Life' }, { fr:'temps de jeu', en:'time played', es:'tiempo de juego' }]
+];
+// lignes du duel : [clé, libellé (PAGE ou TEXTS), plus grand = mieux]
+const DUEL = [['players', 'players'], ['games', 'stats.games'], ['discs', 'stats.discs'], ['dist', 'stats.dist'], ['time', 'time'], ['ko', 'stats.ko'], ['streak', 'streak'],
+  ['rb', 'stats.rainbow'], ['combo', 'stats.combo'], ['superC', 'stats.superC'], ['mega', 'stats.mega'], ['giga', 'stats.giga'], ['fires', 'stats.fires'], ['socks', 'stats.socks'],
+  ['slows', 'stats.slows'], ['sharks', 'stats.sharks'], ['spent', 'stats.spent'], ['missed', 'stats.missed'], ['morts', 'morts']];
+const THEMES = ['Outdoor', 'Indoor', 'Beach', 'Catch La Peuf', 'City', 'Forest', 'Fields'];
+const pick = o => (o && (o[LANG] != null ? o[LANG] : o.fr)) || '';
+const T = (k, v) => { let s = PAGE[k] ? pick(PAGE[k]) : (TEXTS[k] ? pick(TEXTS[k]) : k); if (v) for (const x in v) s = s.split('{' + x + '}').join(v[x]); return s; };
+const tn = t => pick(PAGE.t)[t] || t;
+const fmt = n => String(Math.round(n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, { fr:' ', es:'.' }[LANG] || ',');
+const km = px => { const m = (px || 0)/30; return m >= 10000 ? (Math.round(m/100)/10).toLocaleString({ fr:'fr-FR', es:'es-ES' }[LANG] || 'en-US') + ' km' : fmt(m) + ' m'; };
+const dur = sec => { const m = Math.floor((sec || 0)/60), h = Math.floor(m/60); return h >= 100 ? fmt(h) + ' h' : (h ? h + ' h ' + String(m % 60).padStart(2, '0') : m + ' min'); };
+const val = (k, v) => k === 'dist' ? km(v) : (k === 'time' ? dur(v) : (v > 0 && v < 10 && v % 1 ? v.toFixed(1).replace('.', LANG === 'en' ? '.' : ',') : fmt(v)));
+const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' })[c]);
+const $ = id => document.getElementById(id);
+let data = null, filter = '', per = true;
+const NO_AVG = ['players', 'streak'];   // déjà indépendants de la taille de l'équipe
+function rankList(){
+  const list = (data.ranking || []).filter(p => !filter || p.team === filter);
+  if (!list.length) return '<div class="empty">' + esc(T('nobody')) + '</div>';
+  return list.map(p => '<div class="row' + (p.rank <= 3 ? ' r' + p.rank : '') + '" style="--c:' + COL[p.team] + '"><span class="n">' + p.rank + '</span><span class="dot"></span><span class="p">' + esc(p.name) + '</span>'
+    + '<span class="g">' + esc(T(p.games > 1 ? 'games' : 'game', { n: fmt(p.games) })) + '</span><span class="s">' + fmt(p.score) + '</span></div>').join('');
+}
+function render(){
+  document.documentElement.lang = LANG; document.title = 'Stelly Run · ' + T('title');
+  $('h1').textContent = T('title'); $('res').textContent = T('res'); $('play').textContent = T('play');
+  const main = $('main');
+  if (!WEI_URL){ main.innerHTML = '<p class="msg">' + esc(T('notset')) + '</p>'; return; }
+  if (!data){ main.innerHTML = '<p class="msg">…</p>'; return; }
+  if (!data.ok){ main.innerHTML = '<p class="msg">' + esc(T('error')) + '</p>'; return; }
+  $('meta').textContent = T('meta', { n: fmt(data.players), t: new Date(data.updated).toLocaleTimeString({ fr:'fr-FR', es:'es-ES' }[LANG] || 'en-GB', { hour:'2-digit', minute:'2-digit' }) });
+  if (!data.players && !(data.ranking || []).length){ main.innerHTML = '<p class="msg">' + esc(T('empty')) + '</p>'; return; }
+  const t = data.totals || {};
+  let h = '<section class="hero">'
+    + '<div class="big"><b>' + fmt(t.games) + '</b><span>' + esc(T('stats.games')) + '</span></div>'
+    + '<div class="big"><b>' + fmt(t.discs) + '</b><span>' + esc(T('stats.discs')) + '</span></div>'
+    + '<div class="big"><b>' + km(t.dist) + '</b><span>' + esc(T('stats.dist')) + '</span></div>'
+    + '<div class="big"><b>' + dur(t.time) + '</b><span>' + esc(T('time')) + '</span></div></section>';
+  // duel : une colonne par équipe, la meilleure valeur de chaque ligne est marquée
+  h += '<h2>' + esc(T('duel')) + '</h2><div class="chips mode"><button data-m="1"' + (per ? ' class="on"' : '') + '>' + esc(T('per')) + '</button><button data-m="0"' + (per ? '' : ' class="on"') + '>' + esc(T('tot')) + '</button>'
+    + (per ? '<span class="note">' + esc(T('perNote')) + '</span>' : '') + '</div><div class="duel"><table><thead><tr><th></th>'
+    + TEAMS.map(x => '<th class="t" style="--c:' + COL[x] + '"><i></i>' + esc(tn(x)) + '</th>').join('') + '</tr></thead><tbody>';
+  for (const [k, lab] of DUEL){
+    const vs = TEAMS.map(x => { const o = data.teams[x] || {}, v = +o[k] || 0; return per && !NO_AVG.includes(k) ? (o.players ? v/o.players : 0) : v; }), mx = Math.max(...vs);
+    h += '<tr><td>' + esc(T(lab)) + '</td>' + TEAMS.map((x, i) => '<td class="' + (mx > 0 && vs[i] === mx && k !== 'missed' && k !== 'morts' ? 'win' : '') + '" style="--c:' + COL[x] + '"><span class="v">'
+      + (k === 'streak' ? 'x' : '') + val(k, vs[i]) + '</span><span class="b" style="width:' + (mx ? Math.max(4, vs[i]/mx*100) : 0) + '%"></span></td>').join('') + '</tr>';
+  }
+  h += '</tbody></table></div>';
+  // cimetière
+  const bars = (obj, label) => { const e = Object.entries(obj || {}).sort((a, b) => b[1] - a[1]); if (!e.length) return '<div class="empty">' + esc(T('nobody')) + '</div>';
+    const mx = e[0][1]; return e.map(([k, n]) => '<div class="bar"><span>' + esc(label(k)) + '</span><em>' + fmt(n) + '</em><i style="width:' + Math.max(4, n/mx*100) + '%"></i></div>').join(''); };
+  h += '<h2>' + esc(T('grave')) + '</h2><section class="cols">'
+    + '<div class="card"><h3>' + esc(T('deaths')) + '</h3>' + bars(data.deathBy, k => TEXTS['cause.' + k] ? T('cause.' + k) : k) + '<div class="fatal">' + fmt(t.morts) + ' ' + esc(T('total')) + '</div></div>'
+    + '<div class="card"><h3>' + esc(T('terr')) + '</h3>' + bars(data.deathTh, k => THEMES[k] || k) + '</div></section>';
+  // hall of fame, avec la couleur de l'équipe de chacun
+  h += '<h2>' + esc(T('fame')) + '</h2><section class="fame">' + FAME.map(([k, title, what]) => {
+    const list = (data.leaders || {})[k] || [];
+    return '<div class="fcard"><h3>' + esc(pick(title)) + '</h3><p>' + esc(pick(what)) + '</p>' + (list.length ? '<ol>' + list.map((p, i) => '<li style="--c:' + COL[p.team] + '"><span class="rk">' + (i + 1)
+      + '</span><span class="dot"></span><span class="nm">' + esc(p.name) + '</span><span class="v">' + (k === 'streak' ? 'x' : '') + val(k, p.v) + '</span></li>').join('') + '</ol>' : '<div class="empty">' + esc(T('nobody')) + '</div>') + '</div>';
+  }).join('') + '</section>';
+  // classement individuel complet, filtrable par équipe
+  h += '<h2>' + esc(T('rank')) + '</h2><div class="chips"><button data-f=""' + (filter ? '' : ' class="on"') + '>' + esc(T('all')) + '</button>'
+    + TEAMS.map(x => '<button data-f="' + x + '" style="--c:' + COL[x] + '"' + (filter === x ? ' class="on"' : '') + '><span class="dot"></span>' + esc(tn(x)) + '</button>').join('') + '</div><div class="rank" id="rank">' + rankList() + '</div>';
+  main.innerHTML = h;
+}
+document.addEventListener('click', e => { const m = e.target.closest('.mode button'); if (m){ per = m.dataset.m === '1'; const y = scrollY; render(); scrollTo(0, y); return; }
+  const b = e.target.closest('.chips button'); if (!b) return; filter = b.dataset.f;
+  document.querySelectorAll('.chips:not(.mode) button').forEach(x => x.classList.toggle('on', x === b)); $('rank').innerHTML = rankList(); });
+let timer = 0;
+async function load(){
+  clearTimeout(timer); if (!WEI_URL){ render(); return; }
+  try { const r = await (await fetch(WEI_URL + '?view=stats', { cache:'no-store' })).json(); if (!r || !r.ok) throw 0; data = r; timer = setTimeout(load, 60000); }
+  catch(e){ if (!data) data = { ok:false }; timer = setTimeout(load, 10000); }
+  const y = scrollY; render(); scrollTo(0, y);
+}
+render(); load();
+})();
+</script>
+</body>
+</html>

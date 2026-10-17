@@ -1715,7 +1715,7 @@ const CHROME_IDS = ['serial', 'firecatch', 'rainbow2', 'platine', 'diamant', 'ob
 // looks : trophées secrets débloqués en lançant une partie avec la tenue complète (identifiants de boutique.json)
 // v7.0 : disques offerts au déblocage d'un trophée (facile 50, moyen 150, difficile 400, exploit 1000, secret 500, Greatest 2500)
 const TROPHY_REWARD = {"crampons":50,"pasdebol":50,"taupe":50,"amateur":50,"combo5":50,"soldes":50,"vitrine":50,"junior":50,"crabe":50,"marmotte":50,"mains":50,"fashion":50,"gym":150,"force":150,"combo10":150,"plumes":150,"requin":150,"deer":150,"bronze":150,"senior":150,"heros":150,"voltige":150,"cendrillon":150,"tetedure":150,"huck":150,"elfe":150,"hydrate":150,"mcfly":150,"rainbow":150,"cowboy":150,"son31":150,"promqueen":150,"beach":400,"peuf":400,"angry":400,"combo50":400,"master":400,"bulldozer":400,"argent":400,"picsou":400,"chapelier":400,"gmaster":400,"prada":400,"intouchable":400,"cascadeuse":400,"marathon":400,"fields":1000,"city":1000,"forest":1000,"globe":1000,"combo100":1000,"or":1000,"dressing":1000,"legende":1000,"accro":1000,"parzival":1000,"greatest":2500,"serial":500,"firecatch":500,"rainbow2":500,"platine":500,"diamant":500,"obsidienne":500,"adamantium":500,"getalife":500,"flambeur":500,"dam":500};
-function trophyReward(d, id){ const n = TROPHY_REWARD[id] || 0; if (!n) return; d.coins = (d.coins || 0) + n; toast(txt('tr.reward', { name: txt('tr.' + id + '.n'), n }), true); }
+function trophyReward(d, id){ const n = TROPHY_REWARD[id] || 0; if (!n) return; d.coins = (d.coins || 0) + n; if (state !== 'play') toast(txt('tr.reward', { name: txt('tr.' + id + '.n'), n }), true); }
 const LOOKS = { cowboy:['hat-cowboy', 'shirt-texan', 'shoes-cowboy', 'glasses-cowboy_glasses'], son31:['hat-tophat', 'shirt-black_bow_copie', 'glasses-ray', 'shoes-mocassin'], promqueen:['hat-tiare', 'shoes-heels', 'glasses-demi_lune', 'shirt-red_bow'], dam:['hat-viking', 'glasses-future', 'shirt-red_bow', 'shoes-bunny'] };
 // [id, nom, descriptif] : nom et descriptif suivent la langue choisie
 const trEntry = id => { const a = [id];
@@ -2056,12 +2056,12 @@ const LB = (() => {
   async function flushPending(){ const p = store('stellyrunwei_lbpending'); if (!p) return; try { const o = JSON.parse(p); await send(o.name, o.score, o.t, o.discs); } catch(e){} }
   // stats cumulées du joueur, envoyées à la fin de chaque partie pour la page des stats mondiales (dernier état seulement)
   function statsPayload(){
-    const d = TR.d, st = d.st, n = store('stellyrunwei_name');
-    return JSON.stringify(statsArchive({ name: n || '', games: d.games, discs: d.discs, rb: d.rb || 0, spent: d.spent || 0, sharks: d.sharks || 0, best: Math.max(best, d.lbBest || 0),
+    const d = TR.d, st = d.st, wt = WEI.team();
+    return JSON.stringify(statsArchive({ name: WEI.name(), team: wt ? wt.id : '', games: d.games, discs: d.discs, rb: d.rb || 0, spent: d.spent || 0, sharks: d.sharks || 0, best: Math.max(best, d.lbBest || 0),
       ko: st.ko, doe: st.doe, stag: st.stag, dist: st.dist, streak: st.streak, missed: st.missed, fires: st.fires, socks: st.socks, slows: st.slows, time: st.time,
       combo: st.combo, superC: st.superC, mega: st.mega, giga: st.giga, deathBy: st.deathBy, deathTh: st.deathTh }));
   }
-  async function sendStats(){ return;
+  async function sendStats(){
     const payload = statsPayload(); store('stellyrunwei_statspending', payload);
     const sig = cyrb53(id + '|' + payload + '|' + LB_SECRET);
     try { const r = await fetch(LB_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify({ action:'stats', id, payload, v: APP_VERSION, sig }) });
@@ -3795,7 +3795,7 @@ const dqUI = (() => {
   }
   const goal = c => (DQ_BOOL[c.metric] ? 1 : c.target);
   function countHigh(){ let n = 0; for (const k in groups){ const G = groups[k]; if (G.hi && G.got === G.n) n++; } R.high = n; }
-  function check(){
+  function check(){ return;
     roll(); if (R.active) countHigh();
     const cs = chal(); let changed = false;
     cs.forEach((c, i) => { if (S.done[i] || value(c) < goal(c)) return;
@@ -4018,7 +4018,8 @@ const WEI = (() => {
     + '.weiset .chip{ display:flex; align-items:center; gap:calc(var(--s)*2px); padding:calc(var(--s)*2px) calc(var(--s)*4px); border-radius:calc(var(--s)*2.5px); border:calc(var(--s)*1.2px) solid var(--plum); background:#fff; color:var(--plum); font-weight:700; font-size:max(calc(var(--s)*5px),11px); }'
     + '.weiset .chip i{ width:calc(var(--s)*7px); height:calc(var(--s)*7px); border-radius:calc(var(--s)*1.5px); border:calc(var(--s)*1px) solid var(--plum); }'
     + '.weiset .btn{ font-size:max(calc(var(--s)*5.5px),11px); padding:calc(var(--s)*1.5px) calc(var(--s)*5px) calc(var(--s)*2.5px); }'
-    + '#settings .xh, #settings .xsub, #settings .xrow, #xsync, #xunlink{ display:none !important; }';
+    + '#settings .xh, #settings .xsub, #settings .xrow, #xsync, #xunlink, #dqbtn{ display:none !important; }'
+    + '#install{ top:calc(var(--s)*22px) !important; }';   // sous l'étiquette d'équipe
   document.head.appendChild(css);
 
   // ---------- écran de choix ----------
