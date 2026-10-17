@@ -55,11 +55,11 @@ for o, n, l in P: idx = once(idx, o, n, l)
 lng = (SRC / 'langues.js').read_text(encoding='utf-8')
 WT = '''  // édition équipes
   "wei.pick":     { fr:"Choisis ton équipe", en:"Pick your team", es:"Elige tu equipo" },
-  "wei.name":     { fr:"Ton prénom et ton nom", en:"Your first and last name", es:"Tu nombre y apellido" },
+  "wei.name":     { fr:"Ton nom", en:"Your name", es:"Tu nombre" },
   "wei.go":       { fr:"C’est parti !", en:"Let’s go!", es:"¡Vamos!" },
   "wei.ok":       { fr:"Valider", en:"Confirm", es:"Confirmar" },
   "wei.needTeam": { fr:"Choisis une équipe", en:"Pick a team", es:"Elige un equipo" },
-  "wei.needName": { fr:"Écris ton prénom et ton nom", en:"Write your first and last name", es:"Escribe tu nombre y apellido" },
+  "wei.needName": { fr:"Écris ton nom", en:"Write your name", es:"Escribe tu nombre" },
   "wei.move":     { fr:"Ton record te suit dans ta nouvelle équipe.", en:"Your best score moves with you to your new team.", es:"Tu récord te acompaña a tu nuevo equipo." },
   "wei.t.bleu":   { fr:"Bleue", en:"Blue", es:"Azul" },
   "wei.t.rouge":  { fr:"Rouge", en:"Red", es:"Roja" },

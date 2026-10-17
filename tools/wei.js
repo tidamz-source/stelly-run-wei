@@ -1,6 +1,6 @@
 
 /* ================= Édition équipes : choix de l'équipe, nom complet, envoi des scores ================= */
-// Au tout premier lancement : on choisit son équipe (4 couleurs) et on écrit son prénom et son nom.
+// Au tout premier lancement : on choisit son équipe (4 couleurs) et on écrit son nom.
 // Chaque partie est envoyée au classement des équipes (moyenne des N meilleurs records, voir backend/Code.gs).
 // Le changement d'équipe ou de nom se fait dans Réglages ; le record suit le joueur.
 const WEI_TEAMS = [
@@ -88,7 +88,7 @@ const WEI = (() => {
   function submit(){
     const n = clean(inp.value);
     if (!pick){ msg.textContent = txt('wei.needTeam'); return; }
-    if (n.length < 3 || !/\s/.test(n)){ msg.textContent = txt('wei.needName'); inp.focus(); return; }
+    if (n.length < 2){ msg.textContent = txt('wei.needName'); inp.focus(); return; }
     const before = team() && team().id, beforeN = name(), changed = before && (before !== pick || beforeN !== n);
     set(K_TEAM, pick); set(K_NAME, n); sfx.sock(); close(); paint();
     if (changed) profile();
