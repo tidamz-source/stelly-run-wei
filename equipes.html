@@ -64,6 +64,7 @@ h1 small{ display:block; font-size:.42em; color:#fff; -webkit-text-stroke:0; tex
 .tile{ padding:10px 12px; border-radius:8px; background:rgba(255,255,255,.06); text-align:center; }
 .tile b{ display:block; font-family:var(--num); font-size:16px; color:#fff; margin-bottom:6px; }
 .tile span{ font-size:13px; color:var(--purple-l); }
+body.embed header{ padding-right:110px; }
 footer{ margin-top:20px; text-align:center; font-size:13px; color:var(--purple-l); }
 .msg{ padding:30px 16px; text-align:center; font-size:18px; color:#EADCF2; }
 </style>
@@ -142,6 +143,8 @@ async function load(){
   catch(e){ if (!document.querySelector('.team')) $('teams').innerHTML = '<div class="msg">' + esc(T.off) + '</div>'; timer = setTimeout(load, 8000); }
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
+// ouverte dans le jeu : pas de bouton Jouer (le jeu a son bouton Fermer), et de la place pour lui en haut à droite
+if (/[?&]embed\b/.test(location.search)){ $('play').style.display = 'none'; document.body.classList.add('embed'); }
 load();
 </script>
 </body>

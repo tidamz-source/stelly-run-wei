@@ -48,7 +48,7 @@ P = [
    'lbEntry.hide(); if (!AC.sus()) WEI.send(score, t, discCount);', 'envoi des scores'),
   # bouton du classement : page des résultats des équipes
   ("$('lbbtn').addEventListener('click', e => { e.stopPropagation(); ensureAudio(); open(); });",
-   "$('lbbtn').addEventListener('click', e => { e.stopPropagation(); location.href = 'equipes.html'; });", 'bouton résultats'),
+   "$('lbbtn').addEventListener('click', e => { e.stopPropagation(); ensureAudio(); WEI.results(); });", 'bouton résultats'),
   # pas de partie sans équipe
   ('function startGame(){\n  if (tutoUI.need()){', 'function startGame(){\n  if (WEI.need()){ WEI.open(); return; }\n  if (tutoUI.need()){', 'équipe avant de jouer'),
   ("localStorage.setItem('stellyrunwei_lang', l); } catch(e){} applyLang(); }", "localStorage.setItem('stellyrunwei_lang', l); } catch(e){} applyLang(); try { WEI.paint(); } catch(e){} }", 'langue'),

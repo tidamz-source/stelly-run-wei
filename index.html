@@ -2129,7 +2129,7 @@ const lbUI = (() => {
     if (document.activeElement) document.activeElement.blur();
   }
   $('lbclose').addEventListener('click', e => { e.stopPropagation(); close(); });
-  $('lbbtn').addEventListener('click', e => { e.stopPropagation(); location.href = 'equipes.html'; });
+  $('lbbtn').addEventListener('click', e => { e.stopPropagation(); ensureAudio(); WEI.results(); });
   return { open, close, isOpen: () => isOpen };
 })();
 { const c = $('icoLb'), m = ['....ooooo....','....oyyyo....','....oyYyo....','oooooyYyo....','owwwoyYyooooo','owWwoyyyobbbo','owWwoyyyobBbo','owwwoyyyobbbo','ooooooooooooo'];
@@ -4019,7 +4019,11 @@ const WEI = (() => {
     + '.weiset .chip i{ width:calc(var(--s)*7px); height:calc(var(--s)*7px); border-radius:calc(var(--s)*1.5px); border:calc(var(--s)*1px) solid var(--plum); }'
     + '.weiset .btn{ font-size:max(calc(var(--s)*5.5px),11px); padding:calc(var(--s)*1.5px) calc(var(--s)*5px) calc(var(--s)*2.5px); }'
     + '#settings .xh, #settings .xsub, #settings .xrow, #xsync, #xunlink, #dqbtn{ display:none !important; }'
-    + '#install{ top:calc(var(--s)*22px) !important; }';   // sous l'étiquette d'équipe
+    + '#install{ top:calc(var(--s)*22px) !important; }'   // sous l'étiquette d'équipe
+    + '#weires{ position:absolute; inset:0; z-index:44; background:var(--plum); }'
+    + '#weires[hidden]{ display:none; }'
+    + '#weires iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; background:var(--plum); }'
+    + '#weires .btn{ position:absolute; z-index:1; top:calc(var(--s)*5px); right:calc(var(--s)*5px); }';
   document.head.appendChild(css);
 
   // ---------- écran de choix ----------
@@ -4120,10 +4124,23 @@ const WEI = (() => {
     res.textContent = (j.record ? txt('wei.record', { t: tName(t) }) : txt('wei.sent', { t: tName(t) })) + (mine && mine.rank ? ' · ' + txt('wei.rank', { n: mine.rank }) : '');
   }
 
+  // résultats des équipes : dans le jeu (une page à part ferait sortir l'appli du mode paysage)
+  const res = document.createElement('div'); res.id = 'weires'; res.hidden = true; res.setAttribute('role', 'dialog'); res.setAttribute('aria-modal', 'true');
+  const rClose = document.createElement('button'); rClose.type = 'button'; rClose.className = 'btn alt'; res.appendChild(rClose);
+  $('news').parentElement.appendChild(res);
+  let resOpen = false;
+  function results(){ if (resOpen || state !== 'title') return; resOpen = true; rClose.textContent = txt('ui.close');
+    const f = document.createElement('iframe'); f.title = txt('wei.results'); f.src = 'equipes.html?embed=1'; res.insertBefore(f, rClose);
+    res.hidden = false; $('soundmenu').hidden = true; $('langbtn').hidden = true; sfx.start(); }
+  function closeRes(){ if (!resOpen) return; resOpen = false; res.hidden = true; const f = res.querySelector('iframe'); if (f) f.remove(); if (state === 'title') $('langbtn').hidden = false; }
+  rClose.addEventListener('click', e => { e.stopPropagation(); closeRes(); });
+  res.addEventListener('pointerdown', e => e.stopPropagation());
+  addEventListener('keydown', e => { if (!resOpen) return; e.stopPropagation(); if (e.code === 'Escape' || e.code === 'Space'){ e.preventDefault(); if (e.code === 'Escape') closeRes(); } }, true);
+
   if (!ATELIER){ flush(); addEventListener('online', flush); }
   paint();
   if (!team() || !name()) open();
-  return { need: () => !team() || !name(), open, isOpen: () => isOpen, send, flush, paint, team, name };
+  return { need: () => !team() || !name(), open, isOpen: () => isOpen || resOpen, results, send, flush, paint, team, name };
 })();
 
 // le jeu est prêt : barre pleine, fondu, et l'animation d'accueil repart de zéro
