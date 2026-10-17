@@ -8,9 +8,7 @@ Version de Stelly Run (Lutèce Games) où chaque partie compte pour une équipe 
 
 ## Calcul du classement
 
-On compare la **moyenne des N meilleurs records** de chaque équipe :
-- N est le nombre de joueurs de la plus petite équipe, avec 3 au minimum (`MIN_N` dans `backend/Code.gs`) ;
-- une équipe qui a moins de N joueurs compte 0 pour chaque place vide.
+On compare la **moyenne des 3 meilleurs records** de chaque équipe (`TOP_N` dans `backend/Code.gs`). Une équipe qui a moins de 3 joueurs : moyenne de ceux qu'elle a.
 
 Une équipe de 10 et une équipe de 3 sont donc comparées sur le même nombre de joueurs. Le total des points et le nombre de parties sont affichés à part, comme stats d'effort.
 

@@ -87,19 +87,19 @@ const L = (() => { try { return localStorage.getItem('stellyrunwei_lang') || '';
 const LANG = ['fr', 'en', 'es'].includes(L) ? L : ((navigator.language || 'fr').slice(0, 2) === 'es' ? 'es' : ((navigator.language || 'fr').slice(0, 2) === 'en' ? 'en' : 'fr'));
 const T = {
   fr:{ title:'Résultats des équipes', play:'Jouer', top:'Top 10 des joueurs', team:'Équipe {t}', t:{ bleu:'Bleue', rouge:'Rouge', jaune:'Jaune', vert:'Verte' },
-    rule:'Pour que ce soit juste entre petites et grandes équipes, on compare la <b>moyenne des {n} meilleurs records</b> de chaque équipe ({n} = nombre de joueurs de la plus petite équipe, 3 au minimum ; une place vide compte 0).',
+    rule:'Pour que ce soit juste entre petites et grandes équipes, on compare la <b>moyenne des {n} meilleurs records</b> de chaque équipe (s’il y a moins de {n} joueurs, la moyenne de ceux qui ont joué).',
     rule0:'Le classement démarre dès la première partie jouée. On compare la <b>moyenne des meilleurs records</b> de chaque équipe, à nombre de joueurs égal.',
-    avg:'moyenne top {n}', players:'{n} joueurs', player:'{n} joueur', games:'{n} parties', game:'{n} partie', points:'{n} pts au total', best:'Meilleur :', none:'Pas encore de joueur',
+    avg:'moyenne top {k}', players:'{n} joueurs', player:'{n} joueur', games:'{n} parties', game:'{n} partie', points:'{n} pts au total', best:'Meilleur :', none:'Pas encore de joueur',
     tp:'joueurs', tg:'parties jouées', you:'toi', upd:'Mis à jour à {h} · actualisation automatique', off:'Résultats indisponibles pour le moment. Nouvel essai dans quelques secondes…', notset:'Le classement n’est pas encore branché.' },
   en:{ title:'Team results', play:'Play', top:'Top 10 players', team:'Team {t}', t:{ bleu:'Blue', rouge:'Red', jaune:'Yellow', vert:'Green' },
-    rule:'To keep it fair between small and big teams, we compare the <b>average of the top {n} scores</b> of each team ({n} = number of players in the smallest team, at least 3; an empty spot counts as 0).',
+    rule:'To keep it fair between small and big teams, we compare the <b>average of the top {n} scores</b> of each team (with fewer than {n} players, the average of those who played).',
     rule0:'The ranking starts with the first run. We compare the <b>average of the best scores</b> of each team, with the same number of players.',
-    avg:'top {n} average', players:'{n} players', player:'{n} player', games:'{n} runs', game:'{n} run', points:'{n} pts in total', best:'Best:', none:'No player yet',
+    avg:'top {k} average', players:'{n} players', player:'{n} player', games:'{n} runs', game:'{n} run', points:'{n} pts in total', best:'Best:', none:'No player yet',
     tp:'players', tg:'runs played', you:'you', upd:'Updated at {h} · auto refresh', off:'Results unavailable right now. Retrying in a few seconds…', notset:'The ranking is not connected yet.' },
   es:{ title:'Resultados de los equipos', play:'Jugar', top:'Top 10 de jugadores', team:'Equipo {t}', t:{ bleu:'Azul', rouge:'Roja', jaune:'Amarilla', vert:'Verde' },
-    rule:'Para que sea justo entre equipos pequeños y grandes, se compara la <b>media de los {n} mejores récords</b> de cada equipo ({n} = jugadores del equipo más pequeño, 3 como mínimo; un puesto vacío cuenta 0).',
+    rule:'Para que sea justo entre equipos pequeños y grandes, se compara la <b>media de los {n} mejores récords</b> de cada equipo (con menos de {n} jugadores, la media de los que han jugado).',
     rule0:'La clasificación empieza con la primera partida. Se compara la <b>media de los mejores récords</b> de cada equipo, con el mismo número de jugadores.',
-    avg:'media top {n}', players:'{n} jugadores', player:'{n} jugador', games:'{n} partidas', game:'{n} partida', points:'{n} pts en total', best:'Mejor:', none:'Aún sin jugadores',
+    avg:'media top {k}', players:'{n} jugadores', player:'{n} jugador', games:'{n} partidas', game:'{n} partida', points:'{n} pts en total', best:'Mejor:', none:'Aún sin jugadores',
     tp:'jugadores', tg:'partidas jugadas', you:'tú', upd:'Actualizado a las {h} · actualización automática', off:'Resultados no disponibles por ahora. Nuevo intento en unos segundos…', notset:'La clasificación aún no está conectada.' }
 }[LANG];
 const f = (s, v) => s.replace(/\{(\w+)\}/g, (_, k) => v[k]);
@@ -118,7 +118,7 @@ function render(r){
     return '<div class="team' + (t.rank === 1 ? ' first' : '') + '" style="--c:' + c + '">'
       + '<div class="rk">' + t.rank + '</div>'
       + '<div class="tname"><i></i>' + esc(name) + '</div>'
-      + '<div class="tscore">' + N(t.score) + '<em>' + esc(f(T.avg, { n: r.N })) + '</em></div>'
+      + '<div class="tscore">' + N(t.score) + '<em>' + esc(f(T.avg, { k: Math.min(r.N, t.players) })) + '</em></div>'
       + '<div class="bar"><i data-w="' + (t.score/max*100).toFixed(1) + '"></i></div>'
       + '<div class="meta"><span><b>' + esc(f(t.players > 1 ? T.players : T.player, { n: N(t.players) })) + '</b></span><span>' + esc(f(t.games > 1 ? T.games : T.game, { n: N(t.games) })) + '</span><span>' + esc(f(T.points, { n: N(t.total) })) + '</span></div>'
       + '<div class="tops">' + t.top.map(p => '<span>' + esc(p.name) + '<b>' + N(p.score) + '</b></span>').join('') + '</div>'

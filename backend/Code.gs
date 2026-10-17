@@ -8,13 +8,13 @@
  *     Exécuter en tant que : Moi. Qui a accès : Tout le monde. Déployer, puis autoriser.
  *  4. Copie l'URL qui finit par /exec et donne-la à Claude (elle va dans index.html et equipes.html).
  *
- * Classement : moyenne des N meilleurs records de chaque équipe, N = nombre de joueurs de la plus petite équipe (MIN_N au minimum).
- * Une équipe qui a moins de N joueurs compte 0 pour chaque place vide.
+ * Classement : moyenne des 3 meilleurs records de chaque équipe (TOP_N).
+ * Une équipe qui a moins de 3 joueurs : moyenne de ceux qu'elle a.
  * Le record d'un joueur le suit s'il change d'équipe.
  */
 const SECRET = 'wei-st3lly-4q8z';   // même clé que dans index.html (WEI_SECRET)
 const TEAMS = ['bleu', 'rouge', 'jaune', 'vert'];
-const MIN_N = 3;   // évite qu'une équipe d'un seul joueur ramène le classement au meilleur joueur de chaque équipe
+const TOP_N = 3;   // nombre de meilleurs records comptés par équipe
 const COLS = ['id', 'name', 'team', 'best', 'bestT', 'bestDiscs', 'games', 'total', 'created', 'updated'];
 
 function cyrb53(str, seed) {
@@ -82,19 +82,18 @@ function doPost(e) {
 
 function meOf_(id) { const res = results_(id); return { me: res.me, teams: res.teams, N: res.N }; }
 
-// classement des équipes : moyenne des N meilleurs records, N = taille de la plus petite équipe qui a des joueurs
+// classement des équipes : moyenne des 3 meilleurs records (moins s'il y a moins de 3 joueurs)
 function results_(id) {
   const { rows } = readAll_();
   const by = {}; TEAMS.forEach(t => by[t] = []);
   rows.forEach(r => { if (by[r.team] && +r.best > 0) by[r.team].push(r); });
   TEAMS.forEach(t => by[t].sort((a, b) => b.best - a.best));
-  const sizes = TEAMS.map(t => by[t].length).filter(n => n > 0);
-  const N = sizes.length ? Math.max(MIN_N, Math.min.apply(null, sizes)) : 0;
+  const N = TOP_N;
   const teams = TEAMS.map(t => {
     const p = by[t], top = p.slice(0, N);
     return {
       id: t, players: p.length,
-      score: top.length ? Math.round(top.reduce((s, r) => s + (+r.best), 0) / N) : 0,   // places vides = 0
+      score: top.length ? Math.round(top.reduce((s, r) => s + (+r.best), 0) / top.length) : 0,
       games: rows.filter(r => r.team === t).reduce((s, r) => s + (+r.games || 0), 0),
       total: rows.filter(r => r.team === t).reduce((s, r) => s + (+r.total || 0), 0),
       top: top.map(r => ({ name: r.name, score: +r.best })),

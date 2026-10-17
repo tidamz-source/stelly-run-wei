@@ -80,9 +80,9 @@ lng = re.sub(r"  \{ id:'2026-10-09-synchro'.*?(?=\n  \{ id:)", '', lng, count=1,
 if "2026-10-09-synchro" in lng: sys.exit('[wei] news synchro non retirée')
 NEWS = '''  { id:'wei-bienvenue', date:'2026-10-17', icon:'trophee',
     title:{ fr:'Bienvenue dans l’édition équipes', en:'Welcome to the team edition', es:'Bienvenido a la edición por equipos' },
-    text:{ fr:'Chaque partie compte pour ton équipe. Pour que ce soit juste entre une grande et une petite équipe, on compare la moyenne des meilleurs records : si la plus petite équipe a 4 joueurs, ce sont les 4 meilleurs de chaque équipe qui comptent (3 au minimum). Les résultats sont sur le bouton du classement.',
-      en:'Every run counts for your team. To keep it fair between big and small teams, we compare the average of the best scores: if the smallest team has 4 players, the top 4 of every team count (at least 3). Results are behind the ranking button.',
-      es:'Cada partida cuenta para tu equipo. Para que sea justo entre equipos grandes y pequeños, se compara la media de los mejores récords: si el equipo más pequeño tiene 4 jugadores, cuentan los 4 mejores de cada equipo (3 como mínimo). Los resultados están en el botón de la clasificación.' } },
+    text:{ fr:'Chaque partie compte pour ton équipe. Pour que ce soit juste entre une grande et une petite équipe, on compare la moyenne des 3 meilleurs records de chaque équipe. Les résultats sont sur le bouton du classement.',
+      en:'Every run counts for your team. To keep it fair between big and small teams, we compare the average of the top 3 scores of each team. Results are behind the ranking button.',
+      es:'Cada partida cuenta para tu equipo. Para que sea justo entre equipos grandes y pequeños, se compara la media de los 3 mejores récords de cada equipo. Los resultados están en el botón de la clasificación.' } },
 '''
 lng = once(lng, "const NEWS = [\n", "const NEWS = [\n" + NEWS, 'news bienvenue')
 
