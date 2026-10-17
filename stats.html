@@ -119,6 +119,7 @@ const PAGE = {
   time:{ fr:'Temps de jeu', en:'Time played', es:'Tiempo de juego' }, morts:{ fr:'Morts', en:'Deaths', es:'Muertes' },
   grave:{ fr:'Le cimetière', en:'The graveyard', es:'El cementerio' }, deaths:{ fr:'Morts par cause', en:'Deaths by cause', es:'Muertes por causa' },
   terr:{ fr:'Morts par terrain', en:'Deaths by terrain', es:'Muertes por terreno' }, total:{ fr:'morts au total', en:'deaths in total', es:'muertes en total' },
+  later:{ fr:'Les compteurs détaillés d’un joueur apparaissent après sa prochaine partie.', en:'A player’s detailed counters show up after their next run.', es:'Los contadores detallados de un jugador aparecen tras su próxima partida.' },
   fame:{ fr:'Hall of Fame', en:'Hall of Fame', es:'Salón de la fama' },
   rank:{ fr:'Classement individuel', en:'Individual ranking', es:'Clasificación individual' }, all:{ fr:'Tous', en:'All', es:'Todos' },
   games:{ fr:'{n} parties', en:'{n} runs', es:'{n} partidas' }, game:{ fr:'{n} partie', en:'{n} run', es:'{n} partida' }, you:{ fr:'toi', en:'you', es:'tú' },
@@ -182,11 +183,12 @@ function render(){
     + (per ? '<span class="note">' + esc(T('perNote')) + '</span>' : '') + '</div><div class="duel"><table><thead><tr><th></th>'
     + TEAMS.map(x => '<th class="t" style="--c:' + COL[x] + '"><i></i>' + esc(tn(x)) + '</th>').join('') + '</tr></thead><tbody>';
   for (const [k, lab] of DUEL){
-    const vs = TEAMS.map(x => { const o = data.teams[x] || {}, v = +o[k] || 0; return per && !NO_AVG.includes(k) ? (o.players ? v/o.players : 0) : v; }), mx = Math.max(...vs);
+    const vs = TEAMS.map(x => { const o = data.teams[x] || {}, v = +o[k] || 0; const n = k === 'games' ? o.players : o.sp; return per && !NO_AVG.includes(k) ? (n ? v/n : 0) : v; }), mx = Math.max(...vs);
     h += '<tr><td>' + esc(T(lab)) + '</td>' + TEAMS.map((x, i) => '<td class="' + (mx > 0 && vs[i] === mx && k !== 'missed' && k !== 'morts' ? 'win' : '') + '" style="--c:' + COL[x] + '"><span class="v">'
       + (k === 'streak' ? 'x' : '') + val(k, vs[i]) + '</span><span class="b" style="width:' + (mx ? Math.max(4, vs[i]/mx*100) : 0) + '%"></span></td>').join('') + '</tr>';
   }
   h += '</tbody></table></div>';
+  if (TEAMS.some(x => (data.teams[x].sp || 0) < (data.teams[x].players || 0))) h += '<p class="meta">' + esc(T('later')) + '</p>';
   // cimetière
   const bars = (obj, label) => { const e = Object.entries(obj || {}).sort((a, b) => b[1] - a[1]); if (!e.length) return '<div class="empty">' + esc(T('nobody')) + '</div>';
     const mx = e[0][1]; return e.map(([k, n]) => '<div class="bar"><span>' + esc(label(k)) + '</span><em>' + fmt(n) + '</em><i style="width:' + Math.max(4, n/mx*100) + '%"></i></div>').join(''); };
@@ -210,7 +212,14 @@ document.addEventListener('click', e => { const m = e.target.closest('.mode butt
 let timer = 0;
 async function load(){
   clearTimeout(timer); if (!WEI_URL){ render(); return; }
-  try { const r = await (await fetch(WEI_URL + '?view=stats', { cache:'no-store' })).json(); if (!r || !r.ok) throw 0; data = r; timer = setTimeout(load, 60000); }
+  try {
+    // joueurs et parties : même source que le classement (scores) ; compteurs détaillés : onglet Stats
+    const [r, q] = await Promise.all([fetch(WEI_URL + '?view=stats', { cache:'no-store' }).then(x => x.json()), fetch(WEI_URL, { cache:'no-store' }).then(x => x.json()).catch(() => null)]);
+    if (!r || !r.ok) throw 0;
+    for (const x of TEAMS){ const o = r.teams[x] || (r.teams[x] = {}); o.sp = o.players || 0; }
+    if (q && q.teams){ for (const t of q.teams){ const o = r.teams[t.id]; if (!o) continue; o.players = t.players; o.games = t.games; }
+      r.totals.games = q.games; r.players = q.players; }
+    data = r; timer = setTimeout(load, 60000); }
   catch(e){ if (!data) data = { ok:false }; timer = setTimeout(load, 10000); }
   const y = scrollY; render(); scrollTo(0, y);
 }
