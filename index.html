@@ -600,9 +600,9 @@ __ld(10); setTimeout(() => { const L = document.getElementById('loader'); if (L)
   </div>
 </div>
 <script>__ld(30);</script>
-<script src="langues.js?v=7.2"></script>
+<script src="langues.js?v=7.13"></script>
 <script>__ld(45);</script>
-<script src="stelly.js?v=7.2"></script>
+<script src="stelly.js?v=7.13"></script>
 <script>__ld(60);</script>
 <script>
 /* ================= Langues ================= */
@@ -655,7 +655,7 @@ const WING2 = ['............','............','......oooo..','..oooowwwwo.','.oww
 // tous les canevas de Stelly sont mémorisés pour être redessinés avec l'équipement porté (PAD : voir stelly.js)
 const STELLY_CANVASES = [];
 let EQUIPPED = {};
-function paintStelly(c, eq){ const g = c.getContext('2d'); g.clearRect(0, 0, c.width, c.height); c.ank = drawStelly(g, Object.assign({}, c.opt, { oy:(c.opt.oy || 0) + PAD, eq: c.bare ? {} : (eq || EQUIPPED) })); c.head = c.ank.head; }
+function paintStelly(c, eq){ const g = c.getContext('2d'); g.clearRect(0, 0, c.width, c.height); c.sm = null; c.ank = drawStelly(g, Object.assign({}, c.opt, { oy:(c.opt.oy || 0) + PAD, eq: c.bare ? {} : (eq || EQUIPPED) })); c.head = c.ank.head; }
 function stellyCanvas(o, h){ const c = mk(SW, (h || SH) + PAD); c.opt = o; paintStelly(c); STELLY_CANVASES.push(c); return c; }
 function repaintStelly(){ STELLY_CANVASES.forEach(c => paintStelly(c)); }
 const RUN = POSES.run.map(o => stellyCanvas(o));
@@ -1665,7 +1665,7 @@ let flyers = [], flyIn = 6, rbAt = -1;
 let obs = [], discs = [], items = [], parts = [], pops = [], confetti = [], debris = [], lines = [];
 let shark = null, sharkIn = 4;
 const P = { x:52, y:0, vy:0, ground:true, hold:false, buf:0, anim:0, sockT:0, dust:0, land:0, newBest:false };
-const APP_VERSION = '7.2';
+const APP_VERSION = '7.13';
 // icônes de trophées retouchées dans l'atelier (trophees.json) : remplacent celles dessinées par le code
 const TR_OVR = {}; let TR_OVR_N = 0;
 const THEME_NAMES = ['Outdoor', 'Indoor', 'Beach', 'Catch La Peuf', 'City', 'Forest', 'Fields'];
@@ -1689,7 +1689,7 @@ function startGame(){
   if (tutoUI.need()){ tutoUI.open(); return; }
   AC.reset();
   confetti = []; P.confettiDone = false;
-  lbEntry.submit(); lbEntry.hide(); trUI.close(); shopUI.close(); lbUI.close(); newsUI.close(); statsUI.close(); setUI.close(); $('langbtn').hidden = true; $('langmenu').hidden = true; ensureAudio(); sfx.start(); reset(); TR.start(); rbAt = TR.rainbowAt(); state = 'play'; consStart(); dqStart(); MUSIC.tempo = MUSIC.target = 1; MUSIC.fire = false; MUSIC.play(0, true);
+  lbEntry.submit(); lbEntry.hide(); trUI.close(); shopUI.close(); lbUI.close(); newsUI.close(); statsUI.close(); setUI.close(); $('langbtn').hidden = true; $('langmenu').hidden = true; ensureAudio(); sfx.start(); reset(); { const s0 = state; state = 'play'; TR.start(); state = s0; } /* trophées débloqués au départ : pas de message */ rbAt = TR.rainbowAt(); state = 'play'; consStart(); dqStart(); MUSIC.tempo = MUSIC.target = 1; MUSIC.fire = false; MUSIC.play(0, true);
   ui.title.hidden = true; ui.over.hidden = true; ui.pause.hidden = true; ui.hud.hidden = false;
   ui.hi.textContent = txt('ui.record') + ' ' + pad(best); ui.firebar.hidden = true; ui.sockbar.hidden = true; ui.dcount.hidden = false; $('pausebtn').hidden = false; clearTimeout(zoneTimer); $('zone').hidden = true;
   if (document.activeElement) document.activeElement.blur();
@@ -1709,14 +1709,14 @@ function toast(msg, big, combo){ ui.toast.textContent = msg; ui.toast.classList.
   ui.toast.classList.toggle('combo', !!combo); ui.toast.classList.toggle('c2', combo === 2); ui.toast.classList.toggle('c3', combo === 3); ui.toast.classList.remove('show'); void ui.toast.offsetWidth; ui.toast.classList.add('show'); }
 
 /* ================= Trophées ================= */
-const TROPHY_IDS = ['crampons', 'pasdebol', 'taupe', 'amateur', 'combo5', 'soldes', 'vitrine', 'gym', 'beach', 'city', 'fields', 'forest', 'peuf', 'junior', 'force', 'crabe', 'marmotte', 'combo10', 'plumes', 'mains', 'requin', 'deer', 'globe', 'angry', 'bronze', 'senior', 'heros', 'voltige', 'fashion', 'cendrillon', 'tetedure', 'combo50', 'master', 'huck', 'elfe', 'bulldozer', 'hydrate', 'mcfly', 'argent', 'picsou', 'chapelier', 'gmaster', 'combo100', 'or', 'prada', 'dressing', 'intouchable', 'cascadeuse', 'legende', 'accro', 'marathon', 'rainbow', 'cowboy', 'son31', 'promqueen', 'greatest', 'parzival'];   // ordre d'affichage ; Parzival toujours en dernier, hors Greatest
+const TROPHY_IDS = ['crampons', 'pasdebol', 'taupe', 'amateur', 'combo5', 'soldes', 'vitrine', 'gym', 'beach', 'city', 'fields', 'forest', 'peuf', 'junior', 'force', 'crabe', 'marmotte', 'combo10', 'plumes', 'mains', 'requin', 'deer', 'globe', 'angry', 'bronze', 'senior', 'heros', 'voltige', 'fashion', 'cendrillon', 'tetedure', 'combo50', 'master', 'huck', 'elfe', 'bulldozer', 'hydrate', 'mcfly', 'argent', 'picsou', 'chapelier', 'gmaster', 'combo100', 'or', 'prada', 'dressing', 'intouchable', 'cascadeuse', 'legende', 'accro', 'marathon', 'rainbow', 'cowboy', 'son31', 'promqueen', 'mercury', 'greatest', 'parzival'];   // ordre d'affichage ; Parzival toujours en dernier, hors Greatest
 // trophées chromés : cachés tant qu'ils ne sont pas débloqués, affichés après Parzival, hors compte et hors Greatest
 const CHROME_IDS = ['serial', 'firecatch', 'rainbow2', 'platine', 'diamant', 'obsidienne', 'adamantium', 'getalife', 'flambeur', 'dam'];
 // looks : trophées secrets débloqués en lançant une partie avec la tenue complète (identifiants de boutique.json)
 // v7.0 : disques offerts au déblocage d'un trophée (facile 50, moyen 150, difficile 400, exploit 1000, secret 500, Greatest 2500)
-const TROPHY_REWARD = {"crampons":50,"pasdebol":50,"taupe":50,"amateur":50,"combo5":50,"soldes":50,"vitrine":50,"junior":50,"crabe":50,"marmotte":50,"mains":50,"fashion":50,"gym":150,"force":150,"combo10":150,"plumes":150,"requin":150,"deer":150,"bronze":150,"senior":150,"heros":150,"voltige":150,"cendrillon":150,"tetedure":150,"huck":150,"elfe":150,"hydrate":150,"mcfly":150,"rainbow":150,"cowboy":150,"son31":150,"promqueen":150,"beach":400,"peuf":400,"angry":400,"combo50":400,"master":400,"bulldozer":400,"argent":400,"picsou":400,"chapelier":400,"gmaster":400,"prada":400,"intouchable":400,"cascadeuse":400,"marathon":400,"fields":1000,"city":1000,"forest":1000,"globe":1000,"combo100":1000,"or":1000,"dressing":1000,"legende":1000,"accro":1000,"parzival":1000,"greatest":2500,"serial":500,"firecatch":500,"rainbow2":500,"platine":500,"diamant":500,"obsidienne":500,"adamantium":500,"getalife":500,"flambeur":500,"dam":500};
+const TROPHY_REWARD = {"crampons":50,"pasdebol":50,"taupe":50,"amateur":50,"combo5":50,"soldes":50,"vitrine":50,"junior":50,"crabe":50,"marmotte":50,"mains":50,"fashion":50,"gym":150,"force":150,"combo10":150,"plumes":150,"requin":150,"deer":150,"bronze":150,"senior":150,"heros":150,"voltige":150,"cendrillon":150,"tetedure":150,"huck":150,"elfe":150,"hydrate":150,"mcfly":150,"rainbow":150,"cowboy":150,"son31":150,"promqueen":150,"mercury":150,"beach":400,"peuf":400,"angry":400,"combo50":400,"master":400,"bulldozer":400,"argent":400,"picsou":400,"chapelier":400,"gmaster":400,"prada":400,"intouchable":400,"cascadeuse":400,"marathon":400,"fields":1000,"city":1000,"forest":1000,"globe":1000,"combo100":1000,"or":1000,"dressing":1000,"legende":1000,"accro":1000,"parzival":1000,"greatest":2500,"serial":500,"firecatch":500,"rainbow2":500,"platine":500,"diamant":500,"obsidienne":500,"adamantium":500,"getalife":500,"flambeur":500,"dam":500};
 function trophyReward(d, id){ const n = TROPHY_REWARD[id] || 0; if (!n) return; d.coins = (d.coins || 0) + n; if (!['play', 'pause', 'revive'].includes(state)) toast(txt('tr.reward', { name: txt('tr.' + id + '.n'), n }), true); }   // pas de message en pleine partie
-const LOOKS = { cowboy:['hat-cowboy', 'shirt-texan', 'shoes-cowboy', 'glasses-cowboy_glasses'], son31:['hat-tophat', 'shirt-black_bow_copie', 'glasses-ray', 'shoes-mocassin'], promqueen:['hat-tiare', 'shoes-heels', 'glasses-demi_lune', 'shirt-red_bow'], dam:['hat-viking', 'glasses-future', 'shirt-red_bow', 'shoes-bunny'] };
+const LOOKS = { mercury:['hat-crown', 'shirt-cape', 'shoes-basket_bleu', 'glasses-freddy'], cowboy:['hat-cowboy', 'shirt-texan', 'shoes-cowboy', 'glasses-cowboy_glasses'], son31:['hat-tophat', 'shirt-black_bow_copie', 'glasses-ray', 'shoes-mocassin'], promqueen:['hat-tiare', 'shoes-heels', 'glasses-demi_lune', 'shirt-red_bow'], dam:['hat-viking', 'glasses-future', 'shirt-red_bow', 'shoes-bunny'] };
 // [id, nom, descriptif] : nom et descriptif suivent la langue choisie
 const trEntry = id => { const a = [id];
   Object.defineProperty(a, 1, { get: () => txt('tr.' + id + '.n'), enumerable: true });
@@ -1745,7 +1745,7 @@ const TR = (() => {
   let ended = false;
   function endStats(){ if (ended) return; ended = true; d.st.dist += Math.round(dist); d.st.time += Math.round(t); if (bestStreak > d.st.streak) d.st.streak = bestStreak; retro(); }
   function unlock(id){
-    if (d.u[id]) return; d.u[id] = Date.now(); trophyReward(d, id);
+    if (d.u[id]) return; d.u[id] = Date.now(); trophyReward(d, id); trophyItem(d, id);
     if (!d.u.greatest && TROPHY_IDS.every(k => k === 'greatest' || k === 'parzival' || d.u[k])){ d.u.greatest = Date.now(); trophyReward(d, 'greatest'); }
     save(); refreshTrophyBadge();
   }
@@ -1793,7 +1793,7 @@ const TR = (() => {
       const i = BIRD_KINDS.indexOf(sp); if (i >= 0){ d.birds |= 1 << i; if ((d.birds & 63) === 63) unlock('angry'); save(); } },
     // boutique
     bought(it){ d.spent += it.price; unlock('soldes'); if (d.spent >= 10000) unlock('prada'); if (d.spent >= 25000) unlock('flambeur');
-      const all = SHOP.filter(x => x.img); if (all.filter(x => x.slot === 'hat').every(x => d.own[x.id])) unlock('chapelier'); if (all.every(x => d.own[x.id])) unlock('dressing'); save(); },
+      const all = SHOP.filter(x => x.img && !x.trophy); if (all.filter(x => x.slot === 'hat').every(x => d.own[x.id])) unlock('chapelier'); if (all.every(x => d.own[x.id])) unlock('dressing'); save(); },
     tried(it){ if (d.own[it.id] || d.tried[it.id]) return; d.tried[it.id] = 1; if (Object.keys(d.tried).filter(k => !d.own[k]).length >= 10) unlock('vitrine'); save(); },
     worn(){ if (SHOP_SLOTS.every(sl => EQUIPPED[sl])) unlock('fashion'); },
     // bilan de la partie : frisbees gagnés pour la boutique, trophées débloqués pendant la partie
@@ -2425,7 +2425,7 @@ fetch('boutique.json', { cache:'no-cache' }).then(r => r.json())
     if (it.iconSrc) load(it.iconSrc, x => { const k = Math.max(1, Math.floor(28 / Math.max(x.width, x.height))); it.iconImg = mk(32, 32, g => g.drawImage(x, (32 - x.width*k) >> 1, (32 - x.height*k) >> 1, x.width*k, x.height*k)); });
     Promise.all(extra).then(res);
   }; im.onerror = res; im.src = it.src;
-})))).then(() => { for (const it of SHOP) if (it.img) it.ico = shopIcon(it); applyEquip(); if (TR.d.coins >= 5000) TR.unlock('picsou');
+})))).then(() => { addTrophyItems(); for (const it of SHOP) if (it.img) it.ico = shopIcon(it); applyEquip(); if (TR.d.coins >= 5000) TR.unlock('picsou');
     // pont pour l'atelier : liste des trophées et icônes d'origine (sans les retouches)
     if (ATELIER) window.StellyAtelier = { trophies: TROPHY_IDS.slice(), chrome: CHROME_IDS.slice(), icons: () => buildTrophyIcons(true),
       obstacles: () => OBSTACLES.map(o => ({ id:o.id, g:o.g, bird:!!o.bird, hit:o.hit, gy:o.gy || o.f[0].height, f:o.f.map(c => mk(c.width, c.height, g => g.drawImage(c, 0, 0))) })) }; });
@@ -2435,25 +2435,26 @@ const shopUI = (() => {
   let isOpen = false, slot = 'glasses', cur = null, hideT = 0, raf = 0;
   // images de course dédiées à l'aperçu, redessinées avec l'équipement essayé
   const PFR = RUN.map(r => Object.assign(mk(r.width, r.height), { opt: r.opt }));
-  let tryId = null, pHat = null;
+  let tryId = null, pHat = null, pShirt = null;
   function setPreview(){
     const eq = Object.assign({}, EQUIPPED), it = tryId && shopItem(tryId);
     if (it && it.img) eq[it.slot] = it;
-    pHat = eq.hat || null; PFR.forEach(c => paintStelly(c, eq));
+    pHat = eq.hat || null; pShirt = eq.shirt || null; PFR.forEach(c => paintStelly(c, eq));
   }
   const coins = () => TR.d.coins;
   function render(){
     $('shcoins').querySelector('b').textContent = coins();
     page.querySelectorAll('.shtab').forEach(b => b.classList.toggle('on', b.dataset.slot === slot));
     grid.textContent = ''; hideBubble();
-    const list = SHOP.filter(it => it.slot === slot && it.ico).sort((a, b) => a.price - b.price || a.name.localeCompare(b.name));   // prix croissants
+    const list = SHOP.filter(it => it.slot === slot && it.ico).sort((a, b) => (a.trophy ? 1e9 : a.price) - (b.trophy ? 1e9 : b.price) || a.name.localeCompare(b.name));   // prix croissants, récompenses de trophées à la fin   // prix croissants
     if (!list.length){ const e = document.createElement('div'); e.className = 'empty'; e.textContent = txt('shop.soon'); grid.appendChild(e); return; }
     for (const it of list){
       const own = !!TR.d.own[it.id], worn = TR.d.eq[slot] === it.id, el = document.createElement('button');
-      el.className = 'tr' + (worn ? ' worn' : ''); el.dataset.id = it.id; el.setAttribute('aria-label', it.name + ', ' + (own ? txt(worn ? 'shop.worn' : 'shop.owned') : txt('shop.price', { n: fmtN(it.price) })));
+      el.className = 'tr' + (worn ? ' worn' : ''); el.dataset.id = it.id; el.setAttribute('aria-label', it.name + ', ' + (own ? txt(worn ? 'shop.worn' : 'shop.owned') : (it.trophy ? txt('shop.locked') : txt('shop.price', { n: fmtN(it.price) }))));
       const c = document.createElement('canvas'); c.width = 32; c.height = 32; c.getContext('2d').drawImage(it.ico, 0, 0); el.appendChild(c);
       if (worn){ const k = document.createElement('span'); k.className = 'check'; el.appendChild(k); }
-      if (!own){ const p = document.createElement('span'); p.className = 'price' + (coins() < it.price ? ' no' : ''); const cc = document.createElement('canvas'); cc.width = 9; cc.height = 5; cc.getContext('2d').drawImage(COIN, 0, 0); p.appendChild(cc); p.appendChild(document.createTextNode(it.price)); el.appendChild(p); }
+      if (!own && it.trophy){ el.classList.add('locked'); const l = document.createElement('canvas'); l.className = 'lock'; l.width = 7; l.height = 8; l.getContext('2d').drawImage(LOCK_ICO, 0, 0); el.appendChild(l); }   // récompense de trophée : pas à vendre
+      else if (!own){ const p = document.createElement('span'); p.className = 'price' + (coins() < it.price ? ' no' : ''); const cc = document.createElement('canvas'); cc.width = 9; cc.height = 5; cc.getContext('2d').drawImage(COIN, 0, 0); p.appendChild(cc); p.appendChild(document.createTextNode(it.price)); el.appendChild(p); }
       grid.appendChild(el);
     }
   }
@@ -2461,8 +2462,8 @@ const shopUI = (() => {
   function showBubble(el, it){
     cur = it; tryId = it.id; setPreview(); TR.tried(it); const miss = it.price - coins();
     bub.querySelector('b').textContent = it.name;
-    bub.querySelector('span').textContent = miss > 0 ? txt('shop.missing', { n: fmtN(miss) }) : txt('shop.price', { n: fmtN(it.price) });
-    buy.disabled = miss > 0; buy.textContent = txt('shop.buy');
+    bub.querySelector('span').textContent = it.trophy ? txt('shop.trophyLock', { t: txt('tr.' + it.trophy + '.n'), d: txt('tr.' + it.trophy + '.d') }) : (miss > 0 ? txt('shop.missing', { n: fmtN(miss) }) : txt('shop.price', { n: fmtN(it.price) }));
+    buy.disabled = miss > 0; buy.textContent = txt('shop.buy'); buy.hidden = !!it.trophy;
     bub.hidden = false; bub.style.animation = 'none'; void bub.offsetWidth; bub.style.animation = '';
     const pr = page.getBoundingClientRect(), r = el.getBoundingClientRect(), bw = bub.offsetWidth, bh = bub.offsetHeight, gap = r.height*.22;
     const cx = r.left + r.width/2 - pr.left, left = Math.max(6, Math.min(pr.width - bw - 6, cx - bw/2)), up = r.top - pr.top - bh - gap > 4;
@@ -2472,10 +2473,10 @@ const shopUI = (() => {
   }
   function wear(it){ if (TR.d.eq[it.slot] === it.id) delete TR.d.eq[it.slot]; else TR.d.eq[it.slot] = it.id; TR.d.eqT = Date.now(); TR.save(); applyEquip(); tryId = null; setPreview(); sfx.jump(); render(); }
   function purchase(){
-    const it = cur; if (!it || coins() < it.price || TR.d.own[it.id]) return;
+    const it = cur; if (!it || it.trophy || coins() < it.price || TR.d.own[it.id]) return;
     TR.d.coins -= it.price; TR.d.own[it.id] = 1; TR.d.eq[it.slot] = it.id; TR.d.eqT = Date.now(); TR.save(); applyEquip(); TR.bought(it); tryId = null; setPreview(); sfx.sock(); render();
   }
-  function loop(){ if (!isOpen) return; const f = PFR[Math.floor(performance.now()/62) % RUN_N]; pctx.clearRect(0, 0, prev.width, prev.height); pctx.drawImage(f, 0, prev.height - f.height); drawHat(pctx, f, 0, prev.height - f.height, pHat, performance.now()/1000); raf = requestAnimationFrame(loop); }
+  function loop(){ if (!isOpen) return; const f = PFR[Math.floor(performance.now()/62) % RUN_N]; pctx.clearRect(0, 0, prev.width, prev.height); pctx.drawImage(f, 0, prev.height - f.height); drawHat(pctx, f, 0, prev.height - f.height, pHat, performance.now()/1000); drawSheen(pctx, f, 0, prev.height - f.height, pShirt, performance.now()/1000); raf = requestAnimationFrame(loop); }
   function open(){
     if (isOpen || state !== 'title') return;
     if (!SHOP.some(it => it.slot === slot)) slot = SHOP_SLOTS.find(sl => SHOP.some(it => it.slot === sl)) || 'hat';
@@ -2740,9 +2741,9 @@ function update(dt){
   }
   if (state === 'play'){
     nextObs -= dx; if (nextObs <= 0){ if (birdWait || flyers.some(f => !f.ko && f.x > P.x - 24)) nextObs = 4; else spawnObstacle(); }
-    P.buf -= dt; P.land -= dt;
+    P.buf -= dt; P.land -= dt; sqJ = Math.max(0, sqJ - dt); sqT = Math.max(0, sqT - dt);
     if (P.buf > 0 && P.ground){
-      P.vy = -(P.sockT > 0 ? 460 : 330); P.ground = false; P.buf = 0; sfx.jump(); dust(P.x-2, GY-1, 6);
+      P.vy = -(P.sockT > 0 ? 460 : 330); P.ground = false; P.buf = 0; sqJ = SQ_JUMP; sqT = 0; sfx.jump(); dust(P.x-2, GY-1, 6);
       if (P.sockT > 0) burst(P.x-8, P.y-4, 8, [C.white, '#E6DCF0'], 60, 80);
     }
     { const tg = fireT > 0 ? 1.3 : 1; MUSIC.tempo += (tg - MUSIC.tempo) * Math.min(1, dt*(tg > MUSIC.tempo ? 4 : 1.5)); MUSIC.fire = fireT > 0; }
@@ -2756,7 +2757,7 @@ function update(dt){
     else if (!P.ground){
       const g = P.vy < 0 ? (P.hold && state === 'play' ? 1000 : 2400) : 1600;
       P.vy += g*dt; P.y += P.vy*dt;
-      if (P.y >= GY){ P.y = GY; P.vy = 0; P.ground = true; P.stomps = 0; if (state === 'play'){ P.land = .09; dust(P.x, GY-1, 5); } }
+      if (P.y >= GY){ sqLand(P.vy); P.y = GY; P.vy = 0; P.ground = true; P.stomps = 0; if (state === 'play'){ P.land = .09; dust(P.x, GY-1, 5); } }
     }
   }
 
@@ -3229,13 +3230,15 @@ function draw(){
     else if (P.land > 0) spr = LAND;
     else spr = RUN[Math.floor(P.anim) % RUN_N];
     if (P.sink){ ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, GY + 3); ctx.clip(); }
+    ctx.save(); sqApply(ctx);
     if (fireT > 0 && state === 'play'){
       const col = Math.floor(clock*14) % 2 ? 'rgba(122,87,160,.7)' : 'rgba(255,255,255,.75)';
       ctx.globalAlpha = .25; ctx.drawImage(tinted(spr, 'rgba(128,88,162,.85)'), px - 14, py); ctx.globalAlpha = .45; ctx.drawImage(TMP, px - 7, py); ctx.globalAlpha = 1;
-      ctx.drawImage(spr, px, py); ctx.drawImage(tinted(spr, col), px, py); drawHat(ctx, spr, px, py, EQUIPPED.hat, clock); hatTint(spr, px, py, col);
-    } else { if ((graceT > 0 || safeT > 0) && state === 'play' && Math.floor(clock*16) % 2) ctx.globalAlpha = .4; ctx.drawImage(spr, px, py); drawHat(ctx, spr, px, py, EQUIPPED.hat, clock); ctx.globalAlpha = 1; }
+      ctx.drawImage(spr, px, py); ctx.drawImage(tinted(spr, col), px, py); drawHat(ctx, spr, px, py, EQUIPPED.hat, clock); drawSheen(ctx, spr, px, py, EQUIPPED.shirt, clock); hatTint(spr, px, py, col);
+    } else { if ((graceT > 0 || safeT > 0) && state === 'play' && Math.floor(clock*16) % 2) ctx.globalAlpha = .4; ctx.drawImage(spr, px, py); drawHat(ctx, spr, px, py, EQUIPPED.hat, clock); drawSheen(ctx, spr, px, py, EQUIPPED.shirt, clock); ctx.globalAlpha = 1; }
     const blink = P.sockT > 0 && P.sockT < 1.6 && Math.floor(clock*10)%2;
     if (P.sockT > 0 && !blink && state === 'play' && spr.ank){ const f = Math.floor(clock*14)%2; for (const a of spr.ank) ctx.drawImage(HEEL_WINGS[f], px + a[0] - 10, py + a[1] - 3 - f); }
+    ctx.restore();
     if (P.sink) ctx.restore();
   }
 
@@ -3963,6 +3966,149 @@ function resetAll(){
   addEventListener('resize', () => setTimeout(update, 100));
   update(); }
 setTimeout(() => SYNC.now(), 1500);   // synchro au lancement
+
+/* ================= v7.3 : manette (Backbone, PlayStation, Xbox, Switch…) ================= */
+// A : sauter (maintenu = plus haut), Start / Rejouer / Valider · B : retour, fermer une page, refuser le cœur
+// Menu (≡) ou Vue : pause / reprendre · croix : choisir un bouton (accueil, fin de partie, pause, cœur), lettres du nom, pages des trophées
+// Le bouton choisi à la croix est entouré ; A l'actionne. Sans croix, A fait l'action principale de l'écran.
+const MANETTE = (() => {
+  const css = document.createElement('style');
+  css.textContent = '.padfocus{ outline:calc(var(--s)*1.5px) solid #fff !important; outline-offset:calc(var(--s)*1.5px); box-shadow:0 0 0 calc(var(--s)*3px) rgba(255,207,0,.6) !important; }';
+  document.head.appendChild(css);
+  const prev = {}; let focus = null, raf = 0, holdA = false, any = false;
+  const vis = el => el && !el.hidden && el.offsetParent !== null && getComputedStyle(el).visibility !== 'hidden';
+  const overlay = () => dqUI.isOpen() || trUI.isOpen() || shopUI.isOpen() || lbUI.isOpen() || newsUI.isOpen() || statsUI.isOpen() || setUI.isOpen();
+  const revive = () => document.getElementById('revive');
+  // boutons qu'on peut choisir à la croix, selon l'écran
+  function targets(){
+    if (state === 'revive'){ const r = revive(); return r ? [r.querySelector('.yes'), r.querySelector('.no')] : []; }
+    if (overlay()) return [];
+    if (state === 'title') return ['shopbtn', 'start', 'trobtn', 'lbbtn', 'dqbtn'].map(id => document.getElementById(id));
+    if (state === 'over') return ['home', 'again'].map(id => document.getElementById(id));
+    if (state === 'pause') return ['resume', 'quit'].map(id => document.getElementById(id));
+    return [];
+  }
+  function setFocus(el){ if (focus) focus.classList.remove('padfocus'); focus = el || null; if (focus) focus.classList.add('padfocus'); }
+  function move(d){
+    const list = targets().filter(vis); if (!list.length) return;
+    let i = list.indexOf(focus);
+    if (i < 0) i = Math.max(0, list.indexOf(document.getElementById({ title:'start', over:'again', pause:'resume' }[state]) || list[0]));
+    else i = (i + d + list.length) % list.length;
+    setFocus(list[i]); sfx.disc(1);
+  }
+  const key = code => dispatchEvent(new KeyboardEvent('keydown', { code, key: code === 'Escape' ? 'Escape' : code, bubbles: true }));
+  function down(b){
+    any = true;
+    if (b === 0){   // A
+      if (focus && targets().includes(focus) && vis(focus)){ const f = focus; if (f.id !== 'start' && f.id !== 'again' && f.id !== 'resume') setFocus(null); ensureAudio(); f.click(); return; }
+      if (state === 'revive'){ const y = revive() && revive().querySelector('.yes'); if (y) y.click(); return; }
+      if (state === 'over' && lbEntry.isActive()){ lbEntry.key('Enter'); return; }
+      holdA = true; press(); return;
+    }
+    if (b === 1){   // B
+      if (state === 'revive'){ const n = revive() && revive().querySelector('.no'); if (n) n.click(); return; }
+      if (state === 'play') return;
+      if (state === 'pause'){ resume(); return; }
+      if (state === 'over' && !overlay()){ goHome(); return; }
+      const open = [dqUI, trUI, shopUI, lbUI, newsUI, statsUI, setUI].find(u => u.isOpen());
+      if (open){ open.close(); return; }
+      key('Escape'); return;   // autres fenêtres (elles se ferment avec Échap)
+    }
+    if (b === 9 || b === 8){ if (state === 'play') pause(); else if (state === 'pause') resume(); return; }   // Menu / Vue
+    if (b >= 12 && b <= 15){   // croix : haut, bas, gauche, droite
+      const code = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'][b - 12];
+      if (state === 'over' && lbEntry.isActive()){ lbEntry.key(code); return; }
+      if (trUI.isOpen()){ if (b === 14) trUI.go(-1); else if (b === 15) trUI.go(1); return; }
+      move(b === 12 || b === 14 ? -1 : 1);
+    }
+  }
+  function up(b){ if (b === 0 && holdA){ holdA = false; release(); } }
+  let lastState = state;
+  function poll(){
+    raf = requestAnimationFrame(poll);
+    const pads = navigator.getGamepads ? navigator.getGamepads() : [];
+    if (state !== lastState){ lastState = state; setFocus(null); }
+    if (focus && !targets().includes(focus)) setFocus(null);
+    for (const gp of pads){
+      if (!gp || !gp.connected) continue;
+      const p = prev[gp.index] || (prev[gp.index] = []);
+      gp.buttons.forEach((bt, i) => { const on = bt.pressed || bt.value > .5; if (on && !p[i]) down(i); else if (!on && p[i]) up(i); p[i] = on; });
+      // stick gauche comme une croix (menus seulement)
+      const ax = gp.axes[0] || 0, ay = gp.axes[1] || 0, dir = Math.abs(ax) > .6 ? (ax < 0 ? 14 : 15) : (Math.abs(ay) > .6 ? (ay < 0 ? 12 : 13) : -1);
+      if (dir !== p.stick){ if (dir >= 0 && state !== 'play') down(dir); p.stick = dir; }
+    }
+  }
+  addEventListener('gamepadconnected', () => { if (!raf) poll(); if (state !== 'play') toast(txt('pad.on')); });
+  addEventListener('gamepaddisconnected', () => { const pads = navigator.getGamepads ? [...navigator.getGamepads()].filter(Boolean) : []; if (!pads.length){ cancelAnimationFrame(raf); raf = 0; setFocus(null); if (holdA){ holdA = false; release(); } } });
+  // une manette déjà branchée au chargement n'envoie « connectée » qu'au premier bouton : on écoute dès le départ si l'API existe
+  if (navigator.getGamepads) poll();
+  return { used: () => any };
+})();
+
+/* ================= v7.12 : Armure d'adamantium (récompense du trophée Adamantium) ================= */
+// Costume qui rend Stelly argent chromé, avec deux reflets qui traversent le corps.
+// Pas à vendre : cadenas dans la boutique (onglet Costumes) tant que le trophée Adamantium n'est pas obtenu.
+const ADAM_PAL = { yellow:'#C3CED6', yellowL:'#F2F6F8', yellowM:'#DCE3E8', orange:'#8E9EAC', orangeD:'#66778A', cheek:'#E9A3B4' };
+const LOCK_ICO = mk(7, 8, g => pm(g, ['.ooooo.', 'oo...oo', 'o.....o', 'ooooooo', 'oyyyyyo', 'oyyoyyo', 'oyyyyyo', 'ooooooo'], 0, 0, false, { o:C.plum, y:C.yellow }));
+// ajouté à la boutique une fois boutique.json chargé (appelé juste avant le calcul des icônes)
+function addTrophyItems(){
+  if (shopItem('shirt-adamantium')) return;
+  shopAdd({ id:'shirt-adamantium', slot:'shirt', key:'adamantium', price:0, trophy:'adamantium', sheen:true,
+    name:{ fr:'Armure d’adamantium', en:'Adamantium Armor', es:'Armadura de adamantio' } });
+  const it = shopItem('shirt-adamantium'); it.pal = ADAM_PAL;
+  // vignette : le visage de Stelly argenté (comme les icônes des trophées de tenue)
+  const c = mk(SW, SH + PAD); c.opt = POSES.apex; paintStelly(c, { shirt: it });
+  it.img = mk(32, 32, g => g.drawImage(c, 16, 14, 32, 32, 0, 0, 32, 32)); it.iconImg = it.img;
+  if (TR.d.u.adamantium && !TR.d.own[it.id]){ TR.d.own[it.id] = 1; TR.save(); }   // trophée déjà obtenu avant la v7.12
+}
+// au déblocage d'un trophée : l'article qui va avec (message hors partie seulement)
+// (appelé aussi par TR.retro() au tout début du script : rien d'autre que des littéraux ici)
+function trophyItem(d, id){
+  const iid = ({ adamantium:'shirt-adamantium' })[id]; if (!iid || d.own[iid]) return; d.own[iid] = 1;
+  if (!['play', 'pause', 'revive'].includes(state)) toast(txt('shop.trophyGot', { name: txt('item.' + iid) }), true);
+}
+// reflets animés : deux bandes en diagonale sur les pixels du corps, un passage toutes les ~1,1 s
+const SHEEN_COLS = new Set(Object.values(ADAM_PAL).filter((v, i, a) => v !== ADAM_PAL.cheek).map(h => h.toLowerCase()));
+function drawSheen(ctx, spr, x, y, it, tm){
+  if (!it || !it.sheen || !spr || !spr.width) return;
+  if (!spr.sm || spr.sm.for !== it.id){
+    const im = spr.getContext('2d').getImageData(0, 0, spr.width, spr.height).data, pts = [];
+    let x0 = 1e9, y0 = 1e9, x1 = 0, y1 = 0;
+    const hex = (r, g, b) => '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+    for (let j = 0; j < spr.height; j++) for (let i = 0; i < spr.width; i++){ const k = (j*spr.width + i)*4;
+      if (im[k+3] > 200 && SHEEN_COLS.has(hex(im[k], im[k+1], im[k+2]))){ pts.push(i, j); x0 = Math.min(x0, i); y0 = Math.min(y0, j); x1 = Math.max(x1, i); y1 = Math.max(y1, j); } }
+    spr.sm = { for: it.id, pts, x0, y0, span: (x1 - x0) + (y1 - y0) };
+  }
+  const S = spr.sm, k = Math.floor(tm*14) % 16; if (k >= 11 || !S.pts.length) return;
+  const b0 = -6 + k*(S.span + 12)/10;
+  for (let n = 0; n < S.pts.length; n += 2){
+    const px = S.pts[n], py = S.pts[n+1], dd = (px - S.x0) + (py - S.y0);
+    const a = dd - b0, b = dd - (b0 - 7);
+    if (a >= 0 && a < 3){ ctx.fillStyle = a < 2 ? '#FFFFFF' : '#E8F0F5'; ctx.fillRect(x + px, y + py, 1, 1); }
+    else if (b >= 0 && b < 1){ ctx.fillStyle = '#E8F0F5'; ctx.fillRect(x + px, y + py, 1, 1); }
+  }
+}
+// boutique : style du cadenas (la case est construite dans shopUI.render)
+{ const css = document.createElement('style');
+  css.textContent = '.tr.locked > canvas:first-child{ filter:grayscale(.35) brightness(.78); }'
+    + '.tr .lock{ position:absolute; bottom:calc(var(--s)*-4px); left:50%; transform:translateX(-50%); width:calc(var(--s)*7px); height:auto; image-rendering:pixelated; }';
+  document.head.appendChild(css); }
+
+/* ================= v7.13 : squash & stretch ================= */
+// décollage : étirée en hauteur (0,12 s) · en l'air : étirée selon la vitesse, normale au sommet · atterrissage : écrasée (0,16 s, selon la hauteur de chute)
+var sqJ = 0, sqT = 0, sqA = 0;
+const SQ_JUMP = .12, SQ_LAND = .16;
+function sqLand(vy){ if (state !== 'play') return; sqA = Math.min(1, Math.max(.35, vy/700)); sqT = SQ_LAND; }
+function sqApply(c){
+  if (state !== 'play' && state !== 'pause') return;
+  let sx = 1, sy = 1;
+  if (!P.ground && !P.sink){ const s = Math.min(1, Math.abs(P.vy)/460)*.10; sy += s; sx -= s*.6; }
+  if (sqJ > 0){ const k = sqJ/SQ_JUMP; sy += .08*k; sx -= .05*k; }
+  if (sqT > 0){ const k = sqT/SQ_LAND, q = sqA*.22*k*k; sy -= q; sx += q*.8; }
+  if (sx === 1 && sy === 1) return;
+  const ax = Math.round(P.x), ay = Math.round(P.y);   // ancrage : sous les baskets
+  c.imageSmoothingEnabled = false; c.translate(ax, ay); c.scale(sx, sy); c.translate(-ax, -ay);
+}
 
 /* ================= Édition équipes : choix de l'équipe, nom complet, envoi des scores ================= */
 // Au tout premier lancement : on choisit son équipe (4 couleurs) et on écrit son nom.

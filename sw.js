@@ -1,6 +1,6 @@
 /* Stelly Run : service worker
    Pour publier une mise à jour du jeu : modifier VERSION ci-dessous. */
-const VERSION = 'stelly-run-wei-7.2-12';
+const VERSION = 'stelly-run-wei-7.13-13';
 const FILES = [
   './',
   './index.html',
