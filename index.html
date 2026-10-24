@@ -601,9 +601,9 @@ __ld(10); setTimeout(() => { const L = document.getElementById('loader'); if (L)
   </div>
 </div>
 <script>__ld(30);</script>
-<script src="langues.js?v=7.18"></script>
+<script src="langues.js?v=7.19"></script>
 <script>__ld(45);</script>
-<script src="stelly.js?v=7.18"></script>
+<script src="stelly.js?v=7.19"></script>
 <script>__ld(60);</script>
 <script>
 /* ================= Langues ================= */
@@ -1666,7 +1666,7 @@ let flyers = [], flyIn = 6, rbAt = -1;
 let obs = [], discs = [], items = [], parts = [], pops = [], confetti = [], debris = [], lines = [];
 let shark = null, sharkIn = 4;
 const P = { x:52, y:0, vy:0, ground:true, hold:false, buf:0, anim:0, sockT:0, dust:0, land:0, newBest:false };
-const APP_VERSION = '7.18';
+const APP_VERSION = '7.19';
 // icônes de trophées retouchées dans l'atelier (trophees.json) : remplacent celles dessinées par le code
 const TR_OVR = {}; let TR_OVR_N = 0;
 const THEME_NAMES = ['Outdoor', 'Indoor', 'Beach', 'Catch La Peuf', 'City', 'Forest', 'Fields'];
@@ -4147,12 +4147,14 @@ Object.assign(TEXTS, {
     + '#setbtn{ position:absolute; } #setbtn .dot{ position:absolute; top:calc(var(--s)*-2.5px); right:calc(var(--s)*-2.5px); width:calc(var(--s)*5px); height:calc(var(--s)*5px); border-radius:50%; background:#E0413A; border:calc(var(--s)*.8px) solid var(--plum); }'
     + '#setbtn .dot[hidden]{ display:none; }'
     // Réglages : nouvelles, stats, version
-    + '#setmore{ display:flex; gap:calc(var(--s)*5px); justify-content:center; flex-wrap:wrap; margin:calc(var(--s)*4px) 0 calc(var(--s)*2px); }'
-    + '#setmore .btn{ position:relative; display:flex; align-items:center; gap:calc(var(--s)*2.5px); font-size:max(calc(var(--s)*5.5px),12px); padding:calc(var(--s)*2px) calc(var(--s)*6px); animation:none; }'
-    + '#setmore canvas{ height:calc(var(--s)*8px); width:auto; image-rendering:pixelated; }'
-    + '#setmore .dot{ position:absolute; top:calc(var(--s)*-2px); right:calc(var(--s)*-2px); width:calc(var(--s)*5px); height:calc(var(--s)*5px); border-radius:50%; background:#E0413A; border:calc(var(--s)*.8px) solid var(--plum); }'
+    + '#settings .xh, #settings .xsub, #settings .xrow, #xsync, #xunlink{ display:none !important; }'   // transfert entre appareils retiré (v7.19)
+    + '#setmore{ display:flex; gap:calc(var(--s)*8px); justify-content:center; margin:calc(var(--s)*6px) 0 calc(var(--s)*4px); }'
+    + '#setmore .btn{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:calc(var(--s)*3px); width:calc(var(--s)*62px); height:calc(var(--s)*44px);'
+    + ' font-size:max(calc(var(--s)*6px),12px); padding:calc(var(--s)*3px); animation:none; }'
+    + '#setmore canvas{ height:calc(var(--s)*16px); width:auto; image-rendering:pixelated; }'
+    + '#setmore .dot{ position:absolute; top:calc(var(--s)*-2.5px); right:calc(var(--s)*-2.5px); width:calc(var(--s)*6px); height:calc(var(--s)*6px); border-radius:50%; background:#E0413A; border:calc(var(--s)*.8px) solid var(--plum); }'
     + '#setmore .dot[hidden]{ display:none; }'
-    + '#setver{ text-align:center; font-family:var(--num); font-size:max(calc(var(--s)*4px),10px); color:var(--purple-l); margin:calc(var(--s)*3px) 0 0; }'
+    + '#setver{ position:absolute; left:0; right:0; bottom:calc(var(--s)*6px); text-align:center; font-family:var(--num); font-size:max(calc(var(--s)*4px),10px); color:var(--purple-l); margin:0; }'
     // prise en main
     + '#onb{ position:absolute; left:50%; top:30%; transform:translateX(-50%); z-index:30; display:flex; flex-direction:column; align-items:center; gap:calc(var(--s)*3px); pointer-events:none; }'
     + '#onb[hidden]{ display:none; }'
@@ -4184,7 +4186,7 @@ const ONB = (() => {
   const skip = document.createElement('button'); skip.id = 'onbskip'; skip.className = 'btn alt'; skip.hidden = true;
   $('wrap').append(box, skip);
   let active = false, scale = 1, wait = false, last = null, jumps = 0, phase = 'obs', bird = null, helped = false;
-  var ONB_D = 52, ONB_B = 70;   // distances (px) où le jeu s'arrête : devant un obstacle, devant l'oiseau
+  var ONB_D = 52, ONB_B = 63;   // distances (px) où le jeu s'arrête : devant un obstacle, devant l'oiseau (petit saut forcé : retombe sur l'oiseau de 55 à 70 px)
   const need = () => get(KEY) !== '1';
   function done(){ if (phase !== 'obs' && nextObs > 330) nextObs = 320; active = false; wait = false; scale = 1; box.hidden = true; skip.hidden = true; set(KEY, '1'); }
   function prompt(kind){
@@ -4203,9 +4205,10 @@ const ONB = (() => {
     if (active){
       if (phase === 'obs' || phase === 'clear'){   // chaque obstacle jusqu'à l'oiseau : le jeu s'arrête devant
         flyIn = Math.max(flyIn, 5); birdWait = false;   // pas d'oiseau avant l'étape de l'oiseau
+        if (obs.length || jumps) nextObs = Math.max(nextObs, 400);   // un seul obstacle avant l'oiseau
         const o = obs.find(o => !o.smashed && o.x + o.w > P.x && o.x - P.x < ONB_D);
         if (o && o !== last && P.ground && !wait){ wait = true; last = o; scale = 0; prompt('jump'); }
-        if (wait && !P.ground){ wait = false; scale = 1; box.hidden = true; if (++jumps >= 2 && phase === 'obs') phase = 'clear'; }
+        if (wait && !P.ground){ wait = false; scale = 1; box.hidden = true; if (++jumps >= 1 && phase === 'obs') phase = 'clear'; }
       }
       if (phase === 'clear'){   // deux obstacles passés : plus d'obstacles, on attend que la piste soit libre, puis un oiseau en bas
         nextObs = Math.max(nextObs, 400); flyIn = Math.max(flyIn, 5); birdWait = false;
@@ -4217,8 +4220,7 @@ const ONB = (() => {
         nextObs = Math.max(nextObs, 400); flyIn = Math.max(flyIn, 5);
         if (!wait && P.ground && !bird.ko && bird.x - P.x < ONB_B && bird.x > P.x){ wait = true; scale = 0; prompt('bird'); }
         if (wait && !P.ground){ wait = false; scale = 1; box.hidden = true; helped = true; }
-        // saut guidé : l'oiseau attend devant Stelly pendant la montée, puis se place sous elle à la descente (atterrissage réussi à coup sûr)
-        if (helped && !P.ground && !bird.ko){ const hw = FLY_SPECS[bird.sp].hw; bird.x = P.vy > 40 ? P.x + 1 : Math.max(bird.x, P.x + hw + 9); }
+        if (helped && !P.ground) P.hold = false;   // saut de l'oiseau : toujours le petit saut, qui retombe pile sur l'oiseau (ONB_B)
         if (bird.ko || bird.x < P.x - 30 || !flyers.includes(bird)){ nextObs = 320; done(); }
       }
     }
@@ -4237,7 +4239,7 @@ tutoUI.need = () => false;
 { const s0 = startGame; startGame = function(){ s0.apply(this, arguments); if (state === 'play') ONB.start(); }; }
 new MutationObserver(() => { if (!ui.over.hidden) ONB.stop(); }).observe(ui.over, { attributes:true, attributeFilter:['hidden'] });
 
-// Réglages : nouvelles, statistiques, version ; point rouge sur la roue dentée s'il y a des nouvelles
+// Réglages (v7.19 : sans transfert entre appareils) : nouvelles, statistiques, remise à zéro, version ; point rouge sur la roue dentée s'il y a des nouvelles
 { const set = $('settings'), more = document.createElement('div'); more.id = 'setmore';
   const mkb = (id, ico, key, fn) => { const b = document.createElement('button'); b.className = 'btn alt'; b.id = id;
     const c = document.createElement('canvas'), src = $(ico); c.width = src.width; c.height = src.height; c.getContext('2d').drawImage(src, 0, 0);
@@ -4247,7 +4249,7 @@ new MutationObserver(() => { if (!ui.over.hidden) ONB.stop(); }).observe(ui.over
   const dot = document.createElement('i'); dot.className = 'dot'; bn.appendChild(dot);
   const gdot = document.createElement('i'); gdot.className = 'dot'; $('setbtn').appendChild(gdot);
   const ver = document.createElement('p'); ver.id = 'setver';
-  more.append(bn, bs); set.append(more, ver);
+  more.append(bn, bs); set.append(more, $('rstbtn'), $('rstbox'), ver);   // Réglages : nouvelles et stats, remise à zéro, version
   const src = $('newsbtn').querySelector('.dot');
   const sync = () => { const on = !src.hidden; dot.hidden = !on; gdot.hidden = !on;
     bn.querySelector('span').textContent = txt('set.news'); bs.querySelector('span').textContent = txt('set.stats'); ver.textContent = 'v' + APP_VERSION; };
@@ -4278,8 +4280,6 @@ new MutationObserver(() => { if (!ui.over.hidden) ONB.stop(); }).observe(ui.over
   lbEntry.submit = function(){ if (box.classList.contains('ask')){ box.classList.remove('ask'); lbEntry.hide(); return; } return sub0.apply(this, arguments); };
   ask.addEventListener('click', e => { e.stopPropagation(); box.classList.remove('ask'); sfx.disc(1); }); }
 
-// premier lancement : la course démarre directement
-if (ONB.need()) setTimeout(() => { if (state === 'title') startGame(); }, 900);
 
 /* ================= Édition équipes : choix de l'équipe, nom complet, envoi des scores ================= */
 // Au tout premier lancement : on choisit son équipe (4 couleurs) et on écrit son nom.
