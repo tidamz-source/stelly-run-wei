@@ -30,7 +30,7 @@ APP = re.search(r"const APP_VERSION = '([^']+)'", idx).group(1)
 idx = idx.replace("'stellyrun_", "'stellyrunwei_")
 idx = re.sub(r"const LB_URL = '[^']*';",
   "// classement des équipes (backend/Code.gs) ; le serveur du jeu officiel n'est jamais appelé\n"
-  "const WEI_URL = " + json.dumps(CFG['url']) + ";\nconst WEI_SECRET = 'wei-st3lly-4q8z';\nconst LB_URL = WEI_URL;", idx, count=1)
+  "const WEI_URL = " + json.dumps(CFG['url']) + ";\nconst WEI_REV = '" + APP + "-" + str(CFG['rev']) + "';\nconst WEI_SECRET = 'wei-st3lly-4q8z';\nconst LB_URL = WEI_URL;", idx, count=1)
 if 'const WEI_URL' not in idx: sys.exit('[wei] LB_URL introuvable')
 P = [
   ('<title>Stelly Run</title>', '<title>Stelly Run · Équipes</title>', 'titre'),
