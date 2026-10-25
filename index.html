@@ -601,9 +601,9 @@ __ld(10); setTimeout(() => { const L = document.getElementById('loader'); if (L)
   </div>
 </div>
 <script>__ld(30);</script>
-<script src="langues.js?v=7.19"></script>
+<script src="langues.js?v=7.20"></script>
 <script>__ld(45);</script>
-<script src="stelly.js?v=7.19"></script>
+<script src="stelly.js?v=7.20"></script>
 <script>__ld(60);</script>
 <script>
 /* ================= Langues ================= */
@@ -1666,7 +1666,7 @@ let flyers = [], flyIn = 6, rbAt = -1;
 let obs = [], discs = [], items = [], parts = [], pops = [], confetti = [], debris = [], lines = [];
 let shark = null, sharkIn = 4;
 const P = { x:52, y:0, vy:0, ground:true, hold:false, buf:0, anim:0, sockT:0, dust:0, land:0, newBest:false };
-const APP_VERSION = '7.19';
+const APP_VERSION = '7.20';
 // icônes de trophées retouchées dans l'atelier (trophees.json) : remplacent celles dessinées par le code
 const TR_OVR = {}; let TR_OVR_N = 0;
 const THEME_NAMES = ['Outdoor', 'Indoor', 'Beach', 'Catch La Peuf', 'City', 'Forest', 'Fields'];
@@ -3754,7 +3754,7 @@ const DQ_DATA = {"start":"2026-11-02","plan":[[["F","discsDay",160,"Attrape 160 
 
 /* ================= v7.0 : défis quotidiens (3 par jour, plan de 91 jours en boucle) ================= */
 // le plan (tools/beta_defis.json) est injecté par make_beta.py dans DQ_DATA
-const DQ_REW = { F:60, M:150, D:300 }, DQ_TRIO = 500;
+const DQ_REW = { F:250, M:500, D:750 }, DQ_TRIO = 1000;
 const DQ_BOOL = { stompSock:1, stompEarly:1, stompHigh:1, stompShuttle:1, stompGull:1, heros:1, biome:1 };
 const DQ_DAY = { gamesDay:1, timeDay:1, discsDay:1, scoreDay:1, stompsDay:1, socksDay:1, firesDay:1, distDay:1, comboDay:1 };
 const dqUI = (() => {
@@ -4120,7 +4120,7 @@ function sqApply(c){
 // 1. premier lancement : la course démarre toute seule ; arrêt + « Espace / touche pour sauter » devant le premier obstacle ;
 //    petites bulles la première fois qu'apparaissent une chaussette, une gourde, un chrono, un oiseau ; tutoriel en diaporama retiré
 // 2. accueil : plus de légende, de version, de stats ni de news (dans Réglages ; point rouge sur la roue dentée s'il y a des news)
-// 3. fin de partie : nom pour le classement sur demande (bouton) si aucun nom n'a encore été donné ; chiffres plus gros ; objectifs
+// 3. fin de partie : nom pour le classement sur demande (bouton) si aucun nom n'a encore été donné ; chiffres plus gros
 // 4. Échap ne met plus en pause (P seulement ; la pause automatique quand on quitte la fenêtre reste)
 const esc = v => String(v).replace(/[&<>]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' })[c]);
 Object.assign(TEXTS, {
@@ -4137,8 +4137,6 @@ Object.assign(TEXTS, {
   'set.news':   { fr:'Nouvelles', en:'News', es:'Noticias' },
   'set.stats':  { fr:'Statistiques', en:'Statistics', es:'Estadísticas' },
   'lb.ask':     { fr:'Mettre mon nom au classement', en:'Add my name to the leaderboard', es:'Poner mi nombre en la clasificación' },
-  'goal.buy':   { fr:'Tu peux acheter {name} à la boutique !', en:'You can buy {name} in the shop!', es:'¡Puedes comprar {name} en la tienda!' },
-  'goal.save':  { fr:'Encore {n} frisbees pour {name}', en:'{n} more frisbees for {name}', es:'{n} frisbees más para {name}' },
   });
 { const css = document.createElement('style');
   css.textContent =
@@ -4168,11 +4166,6 @@ Object.assign(TEXTS, {
     // fin de partie : plus lisible, objectifs, nom sur demande
     + '.ostat b{ font-size:max(calc(var(--s)*8px),15px); } .ostat span{ font-size:max(calc(var(--s)*4.6px),10px); }'
     + '.otro .lab, .otro .nm{ font-size:max(calc(var(--s)*5px),11px); }'
-    + '#ogoal{ display:flex; flex-direction:column; align-items:center; gap:calc(var(--s)*1.5px); margin:0 0 calc(var(--s)*3px); }'
-    + '#ogoal[hidden]{ display:none; }'
-    + '#ogoal p{ margin:0; display:flex; align-items:center; gap:calc(var(--s)*2.5px); font-size:max(calc(var(--s)*5px),11px); font-weight:700; color:#fff; }'
-    + '#ogoal p b{ color:var(--yellow); } #ogoal canvas{ width:calc(var(--s)*10px); height:calc(var(--s)*10px); image-rendering:pixelated; background:#FFF4D6; border-radius:calc(var(--s)*1.5px); }'
-    + '#over .panel:has(#lbentry:not([hidden]):not(.ask)) #ogoal{ display:none; }'
     + '#lbentry.ask .lbt, #lbentry.ask .lbslots, #lbentry.ask #lbsend{ display:none; } #lbask{ display:none; } #lbentry.ask #lbask{ display:block; font-size:max(calc(var(--s)*5px),11px); padding:calc(var(--s)*2px) calc(var(--s)*6px); animation:none; }';
   document.head.appendChild(css); }
 
@@ -4256,20 +4249,6 @@ new MutationObserver(() => { if (!ui.over.hidden) ONB.stop(); }).observe(ui.over
   new MutationObserver(sync).observe(src, { attributes:true, attributeFilter:['hidden'] });
   new MutationObserver(sync).observe(set, { attributes:true, attributeFilter:['hidden'] });
   sync(); }
-
-// fin de partie : objectif (prochain article à acheter)
-{ const g = document.createElement('div'); g.id = 'ogoal'; g.hidden = true; $('lbentry').before(g);
-  function fill(){
-    const coins = TR.d.coins, list = SHOP.filter(it => it.img && it.ico && !it.trophy && !TR.d.own[it.id]).sort((a, b) => a.price - b.price);
-    const lines = [];
-    const can = list.filter(x => x.price <= coins), it = can.length ? can[can.length - 1] : list[0];   // le plus beau qu'on peut s'offrir, sinon le moins cher
-    if (it){ const c = mk(32, 32, x => x.drawImage(it.ico, 0, 0)); const p = document.createElement('p'); p.appendChild(c);
-      const s = document.createElement('span'); s.innerHTML = it.price <= coins ? esc(txt('goal.buy', { name: '\u0001' })).replace('\u0001', '<b>' + esc(it.name) + '</b>')
-        : esc(txt('goal.save', { n: '\u0002', name: '\u0001' })).replace('\u0002', '<b>' + fmtN(it.price - coins) + '</b>').replace('\u0001', '<b>' + esc(it.name) + '</b>');
-      p.appendChild(s); lines.push(p); }
-    g.replaceChildren(...lines); g.hidden = !lines.length;
-  }
-  new MutationObserver(() => { if (!ui.over.hidden) fill(); }).observe(ui.over, { attributes:true, attributeFilter:['hidden'] }); }
 
 // classement : tant qu'aucun nom n'a été donné, la saisie s'ouvre sur demande (rien n'est envoyé sans nom)
 { const box = $('lbentry'), ask = document.createElement('button'); ask.id = 'lbask'; ask.className = 'btn alt'; box.prepend(ask);
