@@ -601,9 +601,9 @@ __ld(10); setTimeout(() => { const L = document.getElementById('loader'); if (L)
   </div>
 </div>
 <script>__ld(30);</script>
-<script src="langues.js?v=7.21"></script>
+<script src="langues.js?v=7.22"></script>
 <script>__ld(45);</script>
-<script src="stelly.js?v=7.21"></script>
+<script src="stelly.js?v=7.22"></script>
 <script>__ld(60);</script>
 <script>
 /* ================= Langues ================= */
@@ -1666,7 +1666,7 @@ let flyers = [], flyIn = 6, rbAt = -1;
 let obs = [], discs = [], items = [], parts = [], pops = [], confetti = [], debris = [], lines = [];
 let shark = null, sharkIn = 4;
 const P = { x:52, y:0, vy:0, ground:true, hold:false, buf:0, anim:0, sockT:0, dust:0, land:0, newBest:false };
-const APP_VERSION = '7.21';
+const APP_VERSION = '7.22';
 // icônes de trophées retouchées dans l'atelier (trophees.json) : remplacent celles dessinées par le code
 const TR_OVR = {}; let TR_OVR_N = 0;
 const THEME_NAMES = ['Outdoor', 'Indoor', 'Beach', 'Catch La Peuf', 'City', 'Forest', 'Fields'];
@@ -2033,7 +2033,7 @@ TR.retro(); refreshTrophyBadge();
 /* ================= Classement en ligne (Google Sheet) ================= */
 // classement des équipes (backend/Code.gs) ; le serveur du jeu officiel n'est jamais appelé
 const WEI_URL = "https://script.google.com/macros/s/AKfycbxkc6WIeFh6l9JiJNZJbhM2PDET4ZdB8MG7j7cRTZzkDpRcm-Kpuz39TwXzVeJzAwim/exec";
-const WEI_REV = '7.21-23';
+const WEI_REV = '7.22-24';
 const WEI_SECRET = 'wei-st3lly-4q8z';
 const LB_URL = WEI_URL;
 const LB_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -3917,6 +3917,7 @@ function resetAll(){
   d.st = { combo:0, superC:0, mega:0, giga:0, ko:0, doe:0, stag:0, dist:0, streak:0, missed:0, fires:0, socks:0, slows:0, time:0, deathBy:{}, deathTh:{} };
   TR.save(); applyEquip();
   if (typeof BN !== 'undefined'){ for (const k in BN.d.stock) BN.d.stock[k] = 0; BN.d.eq = null; BN.save(); }
+  ONB.reset();   // v7.22 : le tutoriel (première course guidée) se relance aussi
   best = 0; sealedSave('stellyrunwei_best', '0');
   refreshTrophyBadge(); showTitleRecord(); setUI.refresh();
   try { LB.sendStats(); } catch(e){}
