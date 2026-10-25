@@ -202,25 +202,38 @@ const WEI = (() => {
   res.addEventListener('pointerdown', e => e.stopPropagation());
   addEventListener('keydown', e => { if (!resOpen) return; e.stopPropagation(); if (e.code === 'Escape' || e.code === 'Space'){ e.preventDefault(); if (e.code === 'Escape') closeRes(); } }, true);
 
-  // ---------- bonus de bienvenue : étoile sur la boutique, message dans la boutique (jusqu'à la première visite) ----------
+  // ---------- bonus de bienvenue : étoile sur la boutique jusqu'à la première visite, où le compteur de disques monte ----------
   const bStar = document.createElement('span'); bStar.id = 'weistar'; bStar.className = 'trstar'; bStar.hidden = true;
   bStar.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="12,1.5 14.9,8.6 22.5,9.2 16.7,14.2 18.5,21.6 12,17.6 5.5,21.6 7.3,14.2 1.5,9.2 9.1,8.6"/></svg>';
   $('shopbtn').appendChild(bStar);
-  const bBanner = document.createElement('div'); bBanner.id = 'weibanner'; bBanner.hidden = true; $('shop').querySelector('.trhead').after(bBanner);
   { const c2 = document.createElement('style');
     c2.textContent = '#weistar{ top:calc(var(--s)*-7px); right:calc(var(--s)*-7px); width:calc(var(--s)*13px); height:calc(var(--s)*13px); animation:badge .5s cubic-bezier(.3,1.7,.5,1) .4s both; }'
       + '#weistar[hidden]{ display:none; } #weistar polygon{ fill:var(--orange); }'
-      + '#weibanner{ display:flex; align-items:center; justify-content:center; gap:calc(var(--s)*2px); margin:calc(var(--s)*1px) auto calc(var(--s)*2px); padding:calc(var(--s)*1.5px) calc(var(--s)*6px);'
-      + ' border-radius:calc(var(--s)*2.5px); background:#3DBE5A; border:calc(var(--s)*1.2px) solid #000; color:#fff; font-weight:700; font-size:max(calc(var(--s)*5px),11px); text-shadow:0 1px 0 rgba(0,0,0,.5); width:max-content; max-width:90%; }'
-      + '#weibanner[hidden]{ display:none; } #weibanner canvas{ height:calc(var(--s)*5px); width:auto; image-rendering:pixelated; }';
+      + '#shcoins{ position:relative; } #shcoins.weigain b{ color:var(--yellow); transform:scale(1.25); transition:transform .15s; display:inline-block; }'
+      + '.weipart{ position:absolute; left:50%; top:50%; width:calc(var(--s)*2.6px); height:calc(var(--s)*2.6px); pointer-events:none; animation:weipart .9s ease-out forwards; z-index:5; }'
+      + '@keyframes weipart{ from{ transform:translate(-50%,-50%); opacity:1; } to{ transform:translate(calc(-50% + var(--x)), calc(-50% + var(--y))); opacity:0; } }';
     document.head.appendChild(c2); }
   function bonusMark(){ bStar.hidden = !(TR.d.weiBonus && !TR.d.weiBonusSeen); }
-  // à l'ouverture de la boutique (bouton, manette…) : le message s'affiche pendant cette visite, l'étoile disparaît
+  // première visite de la boutique après le bonus : le compteur de disques monte jusqu'au total en 2 s, puis gerbe de particules et petit son
+  function coinRain(){
+    const box = $('shcoins'), b = box.querySelector('b'), end = TR.d.coins, start = Math.max(0, end - WEI_BONUS), D = 2000;
+    let t0 = 0;
+    const step = now => {
+      if (!t0) t0 = now; const u = Math.min(1, (now - t0) / D), v = Math.round(start + (end - start) * (1 - Math.pow(1 - u, 3)));
+      b.textContent = v;
+      if (u < 1){ requestAnimationFrame(step); return; }
+      b.textContent = end; box.classList.add('weigain'); sfx.mile(); setTimeout(() => box.classList.remove('weigain'), 600);
+      const cols = [C.yellow, '#FFE777', C.white, '#F29318', '#3DBE5A'];
+      for (let i = 0; i < 26; i++){ const p = document.createElement('i'); p.className = 'weipart'; const a = Math.random() * Math.PI * 2, r = 45 + Math.random() * 80;
+        p.style.background = cols[i % cols.length]; p.style.setProperty('--x', Math.cos(a) * r + 'px'); p.style.setProperty('--y', Math.sin(a) * r * .7 + 'px'); p.style.animationDelay = (Math.random() * .15) + 's';
+        box.appendChild(p); setTimeout(() => p.remove(), 1200); }
+    };
+    b.textContent = start; setTimeout(() => requestAnimationFrame(step), 450);
+  }
   new MutationObserver(() => {
-    if (!shopUI.isOpen()){ return; }
-    if (TR.d.weiBonus && !TR.d.weiBonusSeen){ bBanner.textContent = ''; bBanner.append(txt('wei.bonusShop', { n: fmtN(WEI_BONUS) }) + ' ', cvOf(DISC)); bBanner.hidden = false; TR.d.weiBonusSeen = 1; TR.save(); bonusMark(); sfx.mile(); }
+    if (!shopUI.isOpen() || !TR.d.weiBonus || TR.d.weiBonusSeen) return;
+    TR.d.weiBonusSeen = 1; TR.save(); bonusMark(); coinRain();
   }).observe($('shop'), { attributes:true, attributeFilter:['hidden', 'class'] });
-  new MutationObserver(() => { if (!shopUI.isOpen()) bBanner.hidden = true; }).observe($('shop'), { attributes:true, attributeFilter:['hidden'] });
 
   // ---------- Stelly aux couleurs de son équipe ----------
   // le corps prend la palette de l'équipe ; un costume porté (nœud, cravate, cape) garde son motif mais ne change plus la couleur
