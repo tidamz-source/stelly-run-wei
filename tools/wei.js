@@ -242,7 +242,40 @@ const WEI = (() => {
     TR.d.weiBonusSeen = 1; TR.save(); bonusMark(); coinRain();
   }).observe($('shop'), { attributes:true, attributeFilter:['hidden', 'class'] });
 
-  // ---------- Stelly aux couleurs de son équipe ----------
+  // ---------- accueil « WEI EDITION » : les 4 étoiles des équipes dans le blason, animées ----------
+  // les grandes images de Stelly de l'accueil (HERO) sont remplacées par le groupe des 4 étoiles, redessiné à chaque image
+  { const css3 = document.createElement('style');
+    css3.textContent = '#weied{ position:absolute; left:0; right:0; top:calc((var(--py) + 9)*var(--s)*1px); display:flex; justify-content:center; gap:calc(var(--s)*1px); font-family:var(--num); font-size:calc(var(--s)*9px); letter-spacing:.04em;'
+      + ' -webkit-text-stroke:calc(var(--s)*1.4px) var(--plum); paint-order:stroke fill; text-shadow:0 calc(var(--s)*1.6px) 0 var(--plum); white-space:nowrap; animation:fade .6s ease-out .3s both; pointer-events:none; }'
+      + '#weied .sp{ width:calc(var(--s)*5px); }';
+    document.head.appendChild(css3);
+    const ed = document.createElement('div'); ed.id = 'weied'; let j = 0;
+    ed.innerHTML = [...'WEI EDITION'].map(ch => ch === ' ' ? '<span class="sp"></span>' : '<span style="color:' + WEI_TEAMS[(j++) % 4].c + '">' + ch + '</span>').join('');
+    $('title').appendChild(ed); }
+  const HEROW = (() => {
+    const M = 14;   // marge autour du groupe (les étoiles dépassent la place de la Stelly d'origine)
+    const W0 = SW + 2*M, H0 = SH + 14 + PAD + M;
+    // de l'arrière vers l'avant : équipe, décalage x / y, inclinaison, déphasage de l'animation
+    const ORD = [['bleu', -2, -14, -.12, 0], ['vert', 13, -3, .16, 1.3], ['rouge', -13, 4, -.16, 2.6], ['jaune', 6, 10, .04, 3.9]];
+    const star = (id, tilt, eyes) => { const t = mk(SW, SH + 2*PAD), pal = WEI_PAL[id];
+      drawStelly(t.getContext('2d'), { bodyOnly:true, tilt, bob:0, oy:PAD, eyes, mouth:M_SMILE, legs:[[CX, GROUND_Y],[CX, GROUND_Y]], arms:[{h:[0,0],g:'none',b:1},{h:[0,0],g:'none',b:1}], eq: pal ? { shirt:{ pal } } : {} });
+      return t; };
+    const S = ORD.map(([id, dx, dy, tilt, ph]) => ({ id, dx, dy, ph, open: star(id, tilt, EYE_HAPPY), shut: star(id, tilt, EYE_BLINK) }));
+    const frames = HERO.map(() => { const c = mk(W0, H0); c.m = M; c.bare = true; return c; });
+    function compose(tm){
+      for (const c of frames){ const g = c.getContext('2d'); g.clearRect(0, 0, W0, H0);
+        S.forEach((st, i) => {
+          const hop = (tm*.5 + i*.25) % 2.4, jump = hop < .3 ? Math.round(-5*Math.sin(Math.PI*hop/.3)) : 0;   // chacune son tour, un petit saut
+          const bob = Math.round(Math.sin(tm*4 + st.ph)*.6 - .2), blink = ((tm + st.ph*1.7) % 3.4) > 3.25;
+          g.drawImage(blink ? st.shut : st.open, M + st.dx, M + st.dy + 14 + bob + jump);
+        }); }
+    }
+    return { frames, compose, M };
+  })();
+  HERO.splice(0, HERO.length, ...HEROW.frames);
+  (function tick(){ requestAnimationFrame(tick); if (state === 'title') HEROW.compose(clock); })();
+
+
   // le corps prend la palette de l'équipe ; un costume porté (nœud, cravate, cape) garde son motif mais ne change plus la couleur
   { const p0 = paintStelly;
     paintStelly = function(c, eq){
