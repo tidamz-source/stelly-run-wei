@@ -141,6 +141,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '
 const $ = id => document.getElementById(id);
 document.documentElement.lang = LANG; document.title = 'Stelly Run · ' + T.title; $('h1').textContent = T.title; $('play').textContent = T.play; $('h2top').textContent = T.top;
 const myId = (() => { try { return localStorage.getItem('stellyrunwei_id') || ''; } catch(e){ return ''; } })();
+const myTeam = (() => { try { return localStorage.getItem('stellyrunwei_team') || ''; } catch(e){ return ''; } })();
 
 function render(r){
   // le score d'équipe est recalculé ici : moyenne des 3 meilleurs records (ou de ceux qui ont joué s'il y en a moins)
@@ -174,7 +175,7 @@ let timer = 0;
 async function load(){
   clearTimeout(timer);
   if (!WEI_URL){ $('teams').innerHTML = '<div class="msg">' + esc(T.notset) + '</div>'; return; }
-  try { const r = await (await fetch(WEI_URL + '?id=' + encodeURIComponent(myId), { cache:'no-store' })).json(); if (!r || !r.teams) throw 0; render(r); timer = setTimeout(load, 30000); }
+  try { const r = await (await fetch(WEI_URL + '?id=' + encodeURIComponent(myId) + '&team=' + encodeURIComponent(myTeam), { cache:'no-store' })).json(); if (!r || !r.teams) throw 0; render(r); timer = setTimeout(load, 30000); }
   catch(e){ if (!document.querySelector('.team')) $('teams').innerHTML = '<div class="msg">' + esc(T.off) + '</div>'; timer = setTimeout(load, 8000); }
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });

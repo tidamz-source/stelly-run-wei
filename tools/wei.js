@@ -2,7 +2,7 @@
 /* ================= Édition équipes : choix de l'équipe, nom complet, envoi des scores ================= */
 // Au tout premier lancement : on choisit son équipe (4 couleurs) et on écrit son nom.
 // Chaque partie est envoyée au classement des équipes (moyenne des N meilleurs records, voir backend/Code.gs).
-// Le changement d'équipe ou de nom se fait dans Réglages ; le record suit le joueur.
+// Le changement d'équipe ou de nom se fait dans Réglages ; un record reste à l'équipe pour laquelle il a été fait.
 const WEI_TEAMS = [
   { id:'bleu',  c:'#3FA3E0', d:'#1F5F8F' },
   { id:'rouge', c:'#E8384F', d:'#8E1A2C' },

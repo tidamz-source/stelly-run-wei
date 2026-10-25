@@ -3,7 +3,7 @@
 Version de Stelly Run (Lutèce Games) où chaque partie compte pour une équipe : Bleue, Rouge, Jaune ou Verte.
 
 - Au premier lancement, on choisit son équipe et on écrit son nom.
-- Chaque partie est envoyée au classement des équipes. Le changement d'équipe ou de nom se fait dans Réglages, et le record suit le joueur.
+- Chaque partie est envoyée au classement des équipes. Le changement d'équipe ou de nom se fait dans Réglages, et un record reste à l'équipe pour laquelle il a été fait (on repart de zéro dans la nouvelle).
 - `equipes.html` : page des résultats (classement des équipes, top 10 des joueurs, actualisation toutes les 30 s). Elle est faite pour être projetée.
 
 ## Calcul du classement

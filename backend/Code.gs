@@ -10,7 +10,10 @@
  *
  * Classement : moyenne des 3 meilleurs records de chaque équipe (TOP_N).
  * Une équipe qui a moins de 3 joueurs : moyenne de ceux qu'elle a.
- * Le record d'un joueur le suit s'il change d'équipe.
+ * Un record reste à l'équipe pour laquelle il a été fait : un joueur qui change d'équipe repart de zéro
+ * dans la nouvelle (onglet « Joueurs » : une ligne par joueur ET par équipe).
+ * Mise à jour depuis une ancienne version : lancer une fois la fonction reconstruire() (menu Exécuter),
+ * qui refait l'onglet « Joueurs » à partir de l'historique des parties.
  * Stats d'équipe (page stats.html) : compteurs de chaque joueur (onglet « Stats »), additionnés par équipe.
  */
 const SECRET = 'wei-st3lly-4q8z';   // même clé que dans index.html (WEI_SECRET)
@@ -58,11 +61,11 @@ function doPost(e) {
   const lock = LockService.getScriptLock(); lock.waitLock(20000);
   try {
     const { sh, rows } = readAll_(), now = new Date();
-    let r = rows.find(x => x.id === id);
+    let r = rows.find(x => x.id === id && x.team === team);   // une ligne par joueur et par équipe
     if (o.action === 'profile') {
-      // changement d'équipe ou de nom : le record suit le joueur
+      // changement de nom : sur toutes ses lignes ; changement d'équipe : rien ne bouge, le record reste à l'ancienne équipe
       if (o.sig !== cyrb53([id, name, team].join('|') + '|' + SECRET)) return json_({ ok: false, err: 'sig' });
-      if (r) { r.name = name; r.team = team; r.updated = now; writeRow_(sh, r); }
+      rows.filter(x => x.id === id && x.name !== name).forEach(x => { x.name = name; writeRow_(sh, x); });
       return json_({ ok: true });
     }
     if (o.action === 'score') {
@@ -71,15 +74,16 @@ function doPost(e) {
       if (!isFinite(score) || score < 0 || score > 50000000) return json_({ ok: false, err: 'score' });
       // une même partie renvoyée deux fois (réseau coupé) n'est comptée qu'une fois
       const cache = CacheService.getScriptCache();
-      if (rid && cache.get('r' + rid)) return json_(Object.assign({ ok: true, dup: true }, meOf_(id)));
+      if (rid && cache.get('r' + rid)) return json_(Object.assign({ ok: true, dup: true }, meOf_(id, team)));
       if (rid) cache.put('r' + rid, '1', 21600);
       if (!r) { r = { id, name, team, best: 0, bestT: 0, bestDiscs: 0, games: 0, total: 0, created: now, updated: now, row: sh.getLastRow() + 1 }; }
-      r.name = name; r.team = team; r.games = (+r.games || 0) + 1; r.total = (+r.total || 0) + score; r.updated = now;
+      rows.filter(x => x.id === id && x !== r && x.name !== name).forEach(x => { x.name = name; writeRow_(sh, x); });
+      r.name = name; r.games = (+r.games || 0) + 1; r.total = (+r.total || 0) + score; r.updated = now;
       const rec = score > (+r.best || 0);
       if (rec) { r.best = score; r.bestT = t; r.bestDiscs = discs; }
       writeRow_(sh, r);
       runs_().appendRow([now, id, name, team, score, t, discs, String(o.v || '')]);
-      return json_(Object.assign({ ok: true, record: rec }, meOf_(id)));
+      return json_(Object.assign({ ok: true, record: rec }, meOf_(id, team)));
     }
     return json_({ ok: false, err: 'action' });
   } finally { lock.releaseLock(); }
@@ -105,8 +109,9 @@ function saveStats_(o) {
 
 // page des stats : totaux par équipe, cimetière, hall of fame, classement individuel complet
 function teamStats_() {
-  const { rows } = readAll_(), teamOf = {}, best = {};
-  rows.forEach(r => { teamOf[r.id] = r.team; best[r.id] = +r.best || 0; });
+  const { rows } = readAll_(), teamOf = {}, best = {}, upd = {};
+  // compteurs (cumulés sur l'appareil) : comptés pour l'équipe actuelle du joueur
+  rows.forEach(r => { if (!upd[r.id] || r.updated > upd[r.id]) { upd[r.id] = r.updated; teamOf[r.id] = r.team; } best[r.id] = Math.max(best[r.id] || 0, +r.best || 0); });
   const v = stats_().getDataRange().getValues(), P = [];
   for (let i = 1; i < v.length; i++) {
     let p; try { p = JSON.parse(v[i][3]); } catch (e) { continue; }
@@ -134,10 +139,10 @@ function teamStats_() {
   return { ok: true, players: P.length, totals, teams, deathBy, deathTh, leaders, ranking, updated: Date.now() };
 }
 
-function meOf_(id) { const res = results_(id); return { me: res.me, teams: res.teams, N: res.N }; }
+function meOf_(id, team) { const res = results_(id, team); return { me: res.me, teams: res.teams, N: res.N }; }
 
 // classement des équipes : moyenne des 3 meilleurs records (moins s'il y a moins de 3 joueurs)
-function results_(id) {
+function results_(id, team) {
   const { rows } = readAll_();
   const by = {}; TEAMS.forEach(t => by[t] = []);
   rows.forEach(r => { if (by[r.team] && +r.best > 0) by[r.team].push(r); });
@@ -157,15 +162,44 @@ function results_(id) {
   // ex aequo : même rang
   teams.forEach(t => t.rank = t.players ? 1 + teams.filter(x => x.players && x.score > t.score).length : 0);
   const all = rows.filter(r => +r.best > 0).sort((a, b) => b.best - a.best);
-  const top10 = all.slice(0, 10).map((r, i) => ({ rank: i + 1, name: r.name, team: r.team, score: +r.best, me: r.id === id }));
+  // « moi » : ma ligne dans mon équipe actuelle (sinon la plus récente)
+  const mine = rows.filter(r => r.id === id && +r.best > 0), cur = mine.find(r => r.team === team) || mine.sort((a, b) => b.updated - a.updated)[0];
+  const top10 = all.slice(0, 10).map((r, i) => ({ rank: i + 1, name: r.name, team: r.team, score: +r.best, me: r === cur }));
   let me = null;
-  const k = all.findIndex(r => r.id === id);
+  const k = cur ? all.indexOf(cur) : -1;
   if (k >= 0) me = { rank: k + 1, name: all[k].name, team: all[k].team, score: +all[k].best, games: +all[k].games };
   return { ok: true, N, teams, top10, me, players: all.length, games: rows.reduce((s, r) => s + (+r.games || 0), 0), at: Date.now() };
 }
 
 function doGet(e) {
   if (e && e.parameter && e.parameter.view === 'stats') return json_(teamStats_());
-  const id = String((e && e.parameter && e.parameter.id) || '').slice(0, 40);
-  return json_(results_(id));
+  const id = String((e && e.parameter && e.parameter.id) || '').slice(0, 40), team = String((e && e.parameter && e.parameter.team) || '');
+  return json_(results_(id, team));
+}
+
+// À lancer une fois après la mise à jour (Apps Script : choisir « reconstruire » puis Exécuter) :
+// refait l'onglet « Joueurs » à partir de l'onglet « Parties », une ligne par joueur et par équipe,
+// pour rendre à chaque équipe les records faits sous ses couleurs (l'ancienne version les déplaçait).
+// L'ancien onglet est gardé en copie (« Joueurs avant reconstruction »).
+function reconstruire() {
+  const lock = LockService.getScriptLock(); lock.waitLock(30000);
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet(), old = players_();
+    const v = runs_().getDataRange().getValues(), by = {}, names = {};
+    for (let i = 1; i < v.length; i++) {
+      const [date, id, name, team, score, t, discs] = v[i];
+      if (!id || TEAMS.indexOf(team) < 0) continue;
+      const key = id + '|' + team, d = date instanceof Date ? date : new Date(date);
+      const r = by[key] || (by[key] = { id, name, team, best: 0, bestT: 0, bestDiscs: 0, games: 0, total: 0, created: d, updated: d });
+      r.games++; r.total += +score || 0; if (d > r.updated) r.updated = d; if (d < r.created) r.created = d;
+      if ((+score || 0) > r.best) { r.best = +score; r.bestT = +t || 0; r.bestDiscs = +discs || 0; }
+      names[id] = name;   // le dernier nom utilisé
+    }
+    const copy = ss.getSheetByName('Joueurs avant reconstruction'); if (copy) ss.deleteSheet(copy);
+    old.copyTo(ss).setName('Joueurs avant reconstruction');
+    old.clearContents(); old.appendRow(COLS);
+    const out = Object.keys(by).map(k => { const r = by[k]; r.name = names[r.id] || r.name; return COLS.map(c => r[c]); });
+    if (out.length) old.getRange(2, 1, out.length, COLS.length).setValues(out);
+    Logger.log(out.length + ' lignes (joueur × équipe) reconstruites à partir de ' + (v.length - 1) + ' parties');
+  } finally { lock.releaseLock(); }
 }

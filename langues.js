@@ -361,7 +361,7 @@ const TEXTS = {
   "wei.ok":       { fr:"Valider", en:"Confirm", es:"Confirmar" },
   "wei.needTeam": { fr:"Choisis une équipe", en:"Pick a team", es:"Elige un equipo" },
   "wei.needName": { fr:"Écris ton nom", en:"Write your name", es:"Escribe tu nombre" },
-  "wei.move":     { fr:"Ton record te suit dans ta nouvelle équipe.", en:"Your best score moves with you to your new team.", es:"Tu récord te acompaña a tu nuevo equipo." },
+  "wei.move":     { fr:"Ton record reste à ton ancienne équipe : tu repars de zéro dans la nouvelle.", en:"Your best score stays with your old team: you start from zero in the new one.", es:"Tu récord se queda en tu antiguo equipo: empiezas de cero en el nuevo." },
   "wei.t.bleu":   { fr:"Bleue", en:"Blue", es:"Azul" },
   "wei.t.rouge":  { fr:"Rouge", en:"Red", es:"Roja" },
   "wei.t.jaune":  { fr:"Jaune", en:"Yellow", es:"Amarilla" },

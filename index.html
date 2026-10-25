@@ -2033,7 +2033,7 @@ TR.retro(); refreshTrophyBadge();
 /* ================= Classement en ligne (Google Sheet) ================= */
 // classement des équipes (backend/Code.gs) ; le serveur du jeu officiel n'est jamais appelé
 const WEI_URL = "https://script.google.com/macros/s/AKfycbxkc6WIeFh6l9JiJNZJbhM2PDET4ZdB8MG7j7cRTZzkDpRcm-Kpuz39TwXzVeJzAwim/exec";
-const WEI_REV = '7.21-20';
+const WEI_REV = '7.21-21';
 const WEI_SECRET = 'wei-st3lly-4q8z';
 const LB_URL = WEI_URL;
 const LB_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -4279,7 +4279,7 @@ function trailGhosts(spr, px, py){
 /* ================= Édition équipes : choix de l'équipe, nom complet, envoi des scores ================= */
 // Au tout premier lancement : on choisit son équipe (4 couleurs) et on écrit son nom.
 // Chaque partie est envoyée au classement des équipes (moyenne des N meilleurs records, voir backend/Code.gs).
-// Le changement d'équipe ou de nom se fait dans Réglages ; le record suit le joueur.
+// Le changement d'équipe ou de nom se fait dans Réglages ; un record reste à l'équipe pour laquelle il a été fait.
 const WEI_TEAMS = [
   { id:'bleu',  c:'#3FA3E0', d:'#1F5F8F' },
   { id:'rouge', c:'#E8384F', d:'#8E1A2C' },
