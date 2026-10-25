@@ -150,7 +150,8 @@ body{
 #toast.combo{ display:flex; align-items:center; gap:calc(var(--s)*3.7px); color:var(--yellow); -webkit-text-stroke:0; letter-spacing:1px; font-size:calc(var(--s)*15.4px); text-shadow:calc(var(--s)*1px) 0 0 var(--plum), calc(var(--s)*-1px) 0 0 var(--plum), 0 calc(var(--s)*1px) 0 var(--plum), 0 calc(var(--s)*-1px) 0 var(--plum), calc(var(--s)*1px) calc(var(--s)*1px) 0 var(--plum), calc(var(--s)*-1px) calc(var(--s)*1px) 0 var(--plum), calc(var(--s)*1px) calc(var(--s)*-1px) 0 var(--plum), calc(var(--s)*-1px) calc(var(--s)*-1px) 0 var(--plum), 0 calc(var(--s)*2.6px) 0 var(--purple), calc(var(--s)*1px) calc(var(--s)*2.6px) 0 var(--purple), calc(var(--s)*-1px) calc(var(--s)*2.6px) 0 var(--purple), 0 calc(var(--s)*3.6px) 0 var(--plum), calc(var(--s)*1px) calc(var(--s)*3.6px) 0 var(--plum), calc(var(--s)*-1px) calc(var(--s)*3.6px) 0 var(--plum); --d:calc(var(--s)*3.6px); --o:calc(var(--s)*1px); }
 #toast.combo.c2{ font-size:calc(var(--s)*18px); gap:calc(var(--s)*4.3px); text-shadow:calc(var(--s)*1px) 0 0 var(--plum), calc(var(--s)*-1px) 0 0 var(--plum), 0 calc(var(--s)*1px) 0 var(--plum), 0 calc(var(--s)*-1px) 0 var(--plum), calc(var(--s)*1px) calc(var(--s)*1px) 0 var(--plum), calc(var(--s)*-1px) calc(var(--s)*1px) 0 var(--plum), calc(var(--s)*1px) calc(var(--s)*-1px) 0 var(--plum), calc(var(--s)*-1px) calc(var(--s)*-1px) 0 var(--plum), 0 calc(var(--s)*3.1px) 0 var(--purple), calc(var(--s)*1px) calc(var(--s)*3.1px) 0 var(--purple), calc(var(--s)*-1px) calc(var(--s)*3.1px) 0 var(--purple), 0 calc(var(--s)*4.1px) 0 var(--plum), calc(var(--s)*1px) calc(var(--s)*4.1px) 0 var(--plum), calc(var(--s)*-1px) calc(var(--s)*4.1px) 0 var(--plum); --d:calc(var(--s)*4.1px); }
 #toast.combo.c3{ font-size:calc(var(--s)*20.5px); gap:calc(var(--s)*4.9px); text-shadow:calc(var(--s)*1.5px) 0 0 var(--plum), calc(var(--s)*-1.5px) 0 0 var(--plum), 0 calc(var(--s)*1.5px) 0 var(--plum), 0 calc(var(--s)*-1.5px) 0 var(--plum), calc(var(--s)*1.5px) calc(var(--s)*1.5px) 0 var(--plum), calc(var(--s)*-1.5px) calc(var(--s)*1.5px) 0 var(--plum), calc(var(--s)*1.5px) calc(var(--s)*-1.5px) 0 var(--plum), calc(var(--s)*-1.5px) calc(var(--s)*-1.5px) 0 var(--plum), 0 calc(var(--s)*3.6px) 0 var(--purple), calc(var(--s)*1.5px) calc(var(--s)*3.6px) 0 var(--purple), calc(var(--s)*-1.5px) calc(var(--s)*3.6px) 0 var(--purple), 0 calc(var(--s)*5.1px) 0 var(--plum), calc(var(--s)*1.5px) calc(var(--s)*5.1px) 0 var(--plum), calc(var(--s)*-1.5px) calc(var(--s)*5.1px) 0 var(--plum); --d:calc(var(--s)*4.6px); --o:calc(var(--s)*1.5px); }
-#toast.combo::before, #toast.combo::after{ content:''; width:var(--d); height:var(--d); background:var(--yellow); box-shadow:0 0 0 var(--o) var(--plum); transform:rotate(45deg); flex:none; }
+#toast.combo::before, #toast.combo::after{ content:none; }
+#toast.combo{ text-shadow:none !important; } #toast.combo canvas{ display:block; }
 #toast.combo.show{ animation-duration:1.6s; }
 @keyframes toast{
   0%{ opacity:0; transform:translate(-50%,-50%) scale(.5); }
@@ -601,9 +602,9 @@ __ld(10); setTimeout(() => { const L = document.getElementById('loader'); if (L)
   </div>
 </div>
 <script>__ld(30);</script>
-<script src="langues.js?v=7.22"></script>
+<script src="langues.js?v=7.24"></script>
 <script>__ld(45);</script>
-<script src="stelly.js?v=7.22"></script>
+<script src="stelly.js?v=7.24"></script>
 <script>__ld(60);</script>
 <script>
 /* ================= Langues ================= */
@@ -1666,7 +1667,7 @@ let flyers = [], flyIn = 6, rbAt = -1;
 let obs = [], discs = [], items = [], parts = [], pops = [], confetti = [], debris = [], lines = [];
 let shark = null, sharkIn = 4;
 const P = { x:52, y:0, vy:0, ground:true, hold:false, buf:0, anim:0, sockT:0, dust:0, land:0, newBest:false };
-const APP_VERSION = '7.22';
+const APP_VERSION = '7.24';
 // icônes de trophées retouchées dans l'atelier (trophees.json) : remplacent celles dessinées par le code
 const TR_OVR = {}; let TR_OVR_N = 0;
 const THEME_NAMES = ['Outdoor', 'Indoor', 'Beach', 'Catch La Peuf', 'City', 'Forest', 'Fields'];
@@ -1706,8 +1707,29 @@ function goHome(){
 function iceToast(){
   const el = $('icetoast'); el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
 }
-function toast(msg, big, combo){ ui.toast.textContent = msg; ui.toast.classList.toggle('big', !!big && !combo);
+function toast(msg, big, combo){ if (combo) ui.toast.replaceChildren(comboCanvas(msg, combo)); else ui.toast.textContent = msg; ui.toast.classList.toggle('big', !!big && !combo);
   ui.toast.classList.toggle('combo', !!combo); ui.toast.classList.toggle('c2', combo === 2); ui.toast.classList.toggle('c3', combo === 3); ui.toast.classList.remove('show'); void ui.toast.offsetWidth; ui.toast.classList.add('show'); }
+// v7.24 : les combos sont dessinés dans une image (Safari, Mac et iPhone, rendait mal le contour en ombres de texte pendant l'animation)
+// jaune, contour prune, relief violet, un losange de chaque côté ; trois tailles (Super, Méga, Giga)
+function comboCanvas(msg, combo){
+  const S = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--s')) || 3, R = Math.min(3, window.devicePixelRatio || 1), k = S * R;
+  const sz = [15.4, 18, 20.5][combo - 1] || 15.4, o = (combo === 3 ? 1.5 : 1) * k, rel = [2.6, 3.1, 3.6][combo - 1] * k, low = [3.6, 4.1, 5.1][combo - 1] * k;
+  const d = [3.6, 4.1, 4.6][combo - 1] * k, gap = [3.7, 4.3, 4.9][combo - 1] * k, F = Math.round(sz * k);
+  const m = document.createElement('canvas').getContext('2d'); m.font = '700 ' + F + 'px "Pixelify Sans", system-ui, sans-serif';
+  const tw = Math.ceil(m.measureText(msg).width + Math.max(0, msg.length - 1) * R), dd = d * Math.SQRT2 + 2 * o, pad = Math.ceil(o + 2);
+  const W = Math.ceil(dd * 2 + gap * 2 + tw + pad * 2), H = Math.ceil(F * 1.25 + low + pad * 2);
+  const c = document.createElement('canvas'); c.width = W; c.height = H; c.style.width = (W / R) + 'px'; c.style.height = (H / R) + 'px';
+  const g = c.getContext('2d'); g.font = m.font; g.textBaseline = 'middle'; if ('letterSpacing' in g) g.letterSpacing = R + 'px';
+  const cy = pad + F * .62, x0 = pad + dd + gap;
+  const text = (dx, dy, col) => { g.fillStyle = col; g.fillText(msg, x0 + dx, cy + dy); };
+  for (const dx of [-o, 0, o]) text(dx, low, C.plum);                       // relief : bas prune
+  for (const dx of [-o, 0, o]) text(dx, rel, '#7A57A0');                   // relief : violet
+  for (const [dx, dy] of [[o,0],[-o,0],[0,o],[0,-o],[o,o],[-o,o],[o,-o],[-o,-o]]) text(dx, dy, C.plum);   // contour
+  text(0, 0, C.yellow);
+  const diamond = cx => { g.save(); g.translate(cx, cy); g.rotate(Math.PI / 4); g.fillStyle = C.plum; g.fillRect(-d/2 - o, -d/2 - o, d + 2*o, d + 2*o); g.fillStyle = C.yellow; g.fillRect(-d/2, -d/2, d, d); g.restore(); };
+  diamond(pad + dd / 2); diamond(W - pad - dd / 2);
+  return c;
+}
 
 /* ================= Trophées ================= */
 const TROPHY_IDS = ['crampons', 'pasdebol', 'taupe', 'amateur', 'combo5', 'soldes', 'vitrine', 'gym', 'beach', 'city', 'fields', 'forest', 'peuf', 'junior', 'force', 'crabe', 'marmotte', 'combo10', 'plumes', 'mains', 'requin', 'deer', 'globe', 'angry', 'bronze', 'senior', 'heros', 'voltige', 'fashion', 'cendrillon', 'tetedure', 'combo50', 'master', 'huck', 'elfe', 'bulldozer', 'hydrate', 'mcfly', 'argent', 'picsou', 'chapelier', 'gmaster', 'combo100', 'or', 'prada', 'dressing', 'intouchable', 'cascadeuse', 'legende', 'accro', 'marathon', 'rainbow', 'cowboy', 'son31', 'promqueen', 'mercury', 'greatest', 'parzival'];   // ordre d'affichage ; Parzival toujours en dernier, hors Greatest
@@ -2033,7 +2055,7 @@ TR.retro(); refreshTrophyBadge();
 /* ================= Classement en ligne (Google Sheet) ================= */
 // classement des équipes (backend/Code.gs) ; le serveur du jeu officiel n'est jamais appelé
 const WEI_URL = "https://script.google.com/macros/s/AKfycbxkc6WIeFh6l9JiJNZJbhM2PDET4ZdB8MG7j7cRTZzkDpRcm-Kpuz39TwXzVeJzAwim/exec";
-const WEI_REV = '7.22-26';
+const WEI_REV = '7.24-27';
 const WEI_SECRET = 'wei-st3lly-4q8z';
 const LB_URL = WEI_URL;
 const LB_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
