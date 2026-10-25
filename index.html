@@ -2033,7 +2033,7 @@ TR.retro(); refreshTrophyBadge();
 /* ================= Classement en ligne (Google Sheet) ================= */
 // classement des équipes (backend/Code.gs) ; le serveur du jeu officiel n'est jamais appelé
 const WEI_URL = "https://script.google.com/macros/s/AKfycbxkc6WIeFh6l9JiJNZJbhM2PDET4ZdB8MG7j7cRTZzkDpRcm-Kpuz39TwXzVeJzAwim/exec";
-const WEI_REV = '7.20-18';
+const WEI_REV = '7.20-19';
 const WEI_SECRET = 'wei-st3lly-4q8z';
 const LB_URL = WEI_URL;
 const LB_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -4427,7 +4427,7 @@ const WEI = (() => {
   $('news').parentElement.appendChild(res);
   let resOpen = false;
   function results(){ if (resOpen || state !== 'title') return; resOpen = true; rClose.textContent = txt('ui.close');
-    const f = document.createElement('iframe'); f.title = txt('wei.results'); f.src = 'equipes.html?embed=1&v=' + WEI_REV;   // numéro de version : jamais l'ancienne page gardée en cache res.insertBefore(f, rClose);
+    const f = document.createElement('iframe'); f.title = txt('wei.results'); f.src = 'equipes.html?embed=1&v=' + WEI_REV; /* numéro de version : jamais l'ancienne page gardée en cache */ res.insertBefore(f, rClose);
     res.hidden = false; $('soundmenu').hidden = true; $('langbtn').hidden = true; sfx.start(); }
   function closeRes(){ if (!resOpen) return; resOpen = false; res.hidden = true; const f = res.querySelector('iframe'); if (f) f.remove(); if (state === 'title') $('langbtn').hidden = false; }
   rClose.addEventListener('click', e => { e.stopPropagation(); closeRes(); });

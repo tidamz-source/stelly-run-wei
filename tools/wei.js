@@ -165,7 +165,7 @@ const WEI = (() => {
   $('news').parentElement.appendChild(res);
   let resOpen = false;
   function results(){ if (resOpen || state !== 'title') return; resOpen = true; rClose.textContent = txt('ui.close');
-    const f = document.createElement('iframe'); f.title = txt('wei.results'); f.src = 'equipes.html?embed=1&v=' + WEI_REV;   // numéro de version : jamais l'ancienne page gardée en cache res.insertBefore(f, rClose);
+    const f = document.createElement('iframe'); f.title = txt('wei.results'); f.src = 'equipes.html?embed=1&v=' + WEI_REV; /* numéro de version : jamais l'ancienne page gardée en cache */ res.insertBefore(f, rClose);
     res.hidden = false; $('soundmenu').hidden = true; $('langbtn').hidden = true; sfx.start(); }
   function closeRes(){ if (!resOpen) return; resOpen = false; res.hidden = true; const f = res.querySelector('iframe'); if (f) f.remove(); if (state === 'title') $('langbtn').hidden = false; }
   rClose.addEventListener('click', e => { e.stopPropagation(); closeRes(); });
