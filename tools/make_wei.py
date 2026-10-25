@@ -55,6 +55,8 @@ P = [
   # accueil : les images de la Stelly d'accueil peuvent avoir une marge (m) : le groupe des 4 étoiles (tools/wei.js)
   ('ctx.drawImage(HERO[f], ex - SW, ey - 70 - PAD*2 + soff + off, SW*2, (SH+14+PAD)*2);',
    'ctx.drawImage(HERO[f], ex - SW - (HERO[f].m || 0)*2, ey - 70 - PAD*2 + soff + off - (HERO[f].m || 0)*2, HERO[f].width*2, HERO[f].height*2);', 'accueil 4 étoiles'),
+  # accueil : « WEI EDITION » sous le titre, les boutons descendent un peu
+  ('lay.ry = lay.ey + 40; lay.by = lay.ry + 21;', 'lay.ry = lay.ey + 40; lay.by = lay.ry + 33;', 'boutons plus bas'),
   # module équipes : tout à la fin, après les autres modules (il s'en sert)
   ("\n// le jeu est prêt : barre pleine", (HERE / 'wei.js').read_text(encoding='utf-8') + "\n// le jeu est prêt : barre pleine", 'module équipes'),
 ]

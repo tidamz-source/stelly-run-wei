@@ -245,8 +245,8 @@ const WEI = (() => {
   // ---------- accueil « WEI EDITION » : les 4 étoiles des équipes dans le blason, animées ----------
   // les grandes images de Stelly de l'accueil (HERO) sont remplacées par le groupe des 4 étoiles, redessiné à chaque image
   { const css3 = document.createElement('style');
-    css3.textContent = '#weied{ position:absolute; left:0; right:0; top:calc((var(--py) + 9)*var(--s)*1px); display:flex; justify-content:center; gap:calc(var(--s)*1px); font-family:var(--num); font-size:calc(var(--s)*9px); letter-spacing:.04em;'
-      + ' -webkit-text-stroke:calc(var(--s)*1.4px) var(--plum); paint-order:stroke fill; text-shadow:0 calc(var(--s)*1.6px) 0 var(--plum); white-space:nowrap; animation:fade .6s ease-out .3s both; pointer-events:none; }'
+    css3.textContent = '#weied{ position:absolute; left:0; right:0; top:calc((var(--ry) + 18)*var(--s)*1px); z-index:2; display:flex; justify-content:center; gap:calc(var(--s)*1px); font-family:var(--num); font-size:calc(var(--s)*9px); letter-spacing:.04em;'
+      + ' -webkit-text-stroke:calc(var(--s)*1.4px) var(--plum); paint-order:stroke fill; text-shadow:0 calc(var(--s)*1.6px) 0 var(--plum); white-space:nowrap; animation:fade .5s ease-out 1.3s both; pointer-events:none; }'
       + '#weied .sp{ width:calc(var(--s)*5px); }';
     document.head.appendChild(css3);
     const ed = document.createElement('div'); ed.id = 'weied'; let j = 0;
@@ -265,9 +265,11 @@ const WEI = (() => {
     function compose(tm){
       for (const c of frames){ const g = c.getContext('2d'); g.clearRect(0, 0, W0, H0);
         S.forEach((st, i) => {
+          const k = Math.max(0, Math.min(1, (titleT - .45 - i*.16) / .32)); if (k <= 0) return;   // entrée : chacune à son tour, avec un léger décalage
+          const drop = Math.round(-26 * Math.pow(1 - k, 2) + (k < 1 ? 3*Math.sin(Math.PI*k) : 0));
           const hop = (tm*.5 + i*.25) % 2.4, jump = hop < .3 ? Math.round(-5*Math.sin(Math.PI*hop/.3)) : 0;   // chacune son tour, un petit saut
           const bob = Math.round(Math.sin(tm*4 + st.ph)*.6 - .2), blink = ((tm + st.ph*1.7) % 3.4) > 3.25;
-          g.drawImage(blink ? st.shut : st.open, M + st.dx, M + st.dy + 14 + bob + jump);
+          g.drawImage(blink ? st.shut : st.open, M + st.dx, M + st.dy + 14 + bob + jump + drop);
         }); }
     }
     return { frames, compose, M };
