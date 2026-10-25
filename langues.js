@@ -377,8 +377,7 @@ const TEXTS = {
   "wei.sub":      { fr:"Chaque partie compte pour ta couleur", en:"Every run counts for your colour", es:"Cada partida cuenta para tu color" },
   "wei.players":  { fr:"{n} joueurs", en:"{n} players", es:"{n} jugadores" },
   "wei.player":   { fr:"{n} joueur", en:"{n} player", es:"{n} jugador" },
-  "wei.gift":     { fr:"offerts", en:"free", es:"gratis" },
-  "wei.bonus":    { fr:"Bienvenue ! +{n} disques pour la boutique", en:"Welcome! +{n} discs for the shop", es:"¡Bienvenido! +{n} discos para la tienda" },
+  "wei.bonusShop": { fr:"Cadeau de bienvenue : {n} disques offerts !", en:"Welcome gift: {n} free discs!", es:"Regalo de bienvenida: ¡{n} discos gratis!" },
   "wei.later":    { fr:"Hors connexion : ton score partira plus tard", en:"Offline: your score will be sent later", es:"Sin conexión: tu puntuación se enviará más tarde" },
 };
 

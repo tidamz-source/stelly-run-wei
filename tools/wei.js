@@ -57,9 +57,6 @@ const WEI = (() => {
     + '#weimsg{ margin:0; min-height:1.2em; font-weight:700; font-size:max(calc(var(--s)*4.5px),11px); color:#FF9AA8; text-align:center; }'
     + '#weinote{ margin:0; font-size:max(calc(var(--s)*4.2px),10px); color:var(--purple-l); text-align:center; max-width:calc(var(--s)*200px); }'
     + '#weigo, #weicancel{ position:relative; font-size:max(calc(var(--s)*7px),14px); }'
-    + '#weigift{ position:absolute; left:50%; top:calc(var(--s)*-9px); transform:translateX(-50%) rotate(-4deg); display:flex; align-items:center; gap:calc(var(--s)*1.5px); white-space:nowrap; padding:calc(var(--s)*.8px) calc(var(--s)*3px);'
-    + ' border-radius:calc(var(--s)*2px); background:#3DBE5A; border:calc(var(--s)*1px) solid #000; color:#fff; font-family:var(--num); font-size:max(calc(var(--s)*3.6px),8px); text-shadow:0 1px 0 #000; pointer-events:none; }'
-    + '#weigift[hidden]{ display:none; } #weigift canvas{ height:calc(var(--s)*4.5px); width:auto; image-rendering:pixelated; }'
     + '#weitag{ display:inline-flex; align-items:center; gap:calc(var(--s)*1.5px); margin-top:calc(var(--s)*1.5px); padding:calc(var(--s)*.6px) calc(var(--s)*2.5px); border-radius:calc(var(--s)*2px);'
     + ' border:calc(var(--s)*.8px) solid var(--plum); color:#fff; font-weight:700; font-size:max(calc(var(--s)*4px),9px); letter-spacing:.05em; text-transform:uppercase; -webkit-text-stroke:calc(var(--s)*.6px) var(--plum); paint-order:stroke fill; pointer-events:none; }'
     + '#weititle{ position:absolute; top:calc(var(--s)*4px); left:calc(var(--s)*4px); z-index:2; display:flex; align-items:center; gap:calc(var(--s)*2px); max-width:40%;'
@@ -83,10 +80,10 @@ const WEI = (() => {
   const page = document.createElement('div'); page.id = 'wei'; page.hidden = true; page.setAttribute('role', 'dialog'); page.setAttribute('aria-modal', 'true');
   page.innerHTML = '<h2></h2><p class="sub"></p><div id="weiteams"></div>'
     + '<div id="weirow"><input id="weiname" maxlength="40" autocomplete="name" spellcheck="false"><button type="button" class="btn alt" id="weicancel" hidden></button>'
-    + '<button type="button" class="btn" id="weigo"><span id="weigift" hidden></span><span class="lab"></span></button></div><p id="weimsg"></p><p id="weinote" hidden></p>';
+    + '<button type="button" class="btn" id="weigo"><span class="lab"></span></button></div><p id="weimsg"></p><p id="weinote" hidden></p>';
   $('news').parentElement.appendChild(page);
   const grid = page.querySelector('#weiteams'), inp = page.querySelector('#weiname'), msg = page.querySelector('#weimsg'), note = page.querySelector('#weinote');
-  const go = page.querySelector('#weigo'), cancel = page.querySelector('#weicancel'), gift = page.querySelector('#weigift');
+  const go = page.querySelector('#weigo'), cancel = page.querySelector('#weicancel');
   let pick = null, isOpen = false, after = null, counts = {};
   const card = {};
   const sprite = (t, pose) => { const c = mk(SW, SH + PAD); c.opt = pose; c.weiTeam = t.id; paintStelly(c, {}); return c; };
@@ -113,7 +110,6 @@ const WEI = (() => {
     page.querySelector('h2').textContent = txt('wei.pick'); page.querySelector('.sub').textContent = txt('wei.sub');
     inp.placeholder = txt('wei.name'); inp.setAttribute('aria-label', txt('wei.name'));
     go.querySelector('.lab').textContent = txt(team() && name() ? 'wei.ok' : 'wei.go'); cancel.textContent = txt('ui.close'); note.textContent = txt('wei.move');
-    gift.hidden = !!TR.d.weiBonus; gift.innerHTML = ''; gift.append('+' + fmtN(WEI_BONUS) + ' ', cvOf(DISC), ' ' + txt('wei.gift'));
   }
   function open(then){
     after = then || null; const first = !team() || !name();
@@ -129,7 +125,7 @@ const WEI = (() => {
     const before = team() && team().id, beforeN = name(), changed = before && (before !== pick || beforeN !== n);
     set(K_TEAM, pick); set(K_NAME, n); sfx.sock(); close(); paint(); repaintStelly();
     // bonus de bienvenue : une seule fois par partie sauvegardée (pas à chaque changement d'équipe)
-    if (!TR.d.weiBonus){ TR.d.weiBonus = 1; TR.d.coins += WEI_BONUS; TR.save(); setTimeout(() => { toast(txt('wei.bonus', { n: fmtN(WEI_BONUS) }), true); sfx.mile(); }, 300); }
+    if (!TR.d.weiBonus){ TR.d.weiBonus = 1; TR.d.coins += WEI_BONUS; TR.save(); bonusMark(); }
     if (changed) profile();
     const f = after; after = null; if (f) f();
   }
@@ -206,6 +202,26 @@ const WEI = (() => {
   res.addEventListener('pointerdown', e => e.stopPropagation());
   addEventListener('keydown', e => { if (!resOpen) return; e.stopPropagation(); if (e.code === 'Escape' || e.code === 'Space'){ e.preventDefault(); if (e.code === 'Escape') closeRes(); } }, true);
 
+  // ---------- bonus de bienvenue : étoile sur la boutique, message dans la boutique (jusqu'à la première visite) ----------
+  const bStar = document.createElement('span'); bStar.id = 'weistar'; bStar.className = 'trstar'; bStar.hidden = true;
+  bStar.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="12,1.5 14.9,8.6 22.5,9.2 16.7,14.2 18.5,21.6 12,17.6 5.5,21.6 7.3,14.2 1.5,9.2 9.1,8.6"/></svg>';
+  $('shopbtn').appendChild(bStar);
+  const bBanner = document.createElement('div'); bBanner.id = 'weibanner'; bBanner.hidden = true; $('shop').querySelector('.trhead').after(bBanner);
+  { const c2 = document.createElement('style');
+    c2.textContent = '#weistar{ top:calc(var(--s)*-7px); right:calc(var(--s)*-7px); width:calc(var(--s)*13px); height:calc(var(--s)*13px); animation:badge .5s cubic-bezier(.3,1.7,.5,1) .4s both; }'
+      + '#weistar[hidden]{ display:none; } #weistar polygon{ fill:var(--orange); }'
+      + '#weibanner{ display:flex; align-items:center; justify-content:center; gap:calc(var(--s)*2px); margin:calc(var(--s)*1px) auto calc(var(--s)*2px); padding:calc(var(--s)*1.5px) calc(var(--s)*6px);'
+      + ' border-radius:calc(var(--s)*2.5px); background:#3DBE5A; border:calc(var(--s)*1.2px) solid #000; color:#fff; font-weight:700; font-size:max(calc(var(--s)*5px),11px); text-shadow:0 1px 0 rgba(0,0,0,.5); width:max-content; max-width:90%; }'
+      + '#weibanner[hidden]{ display:none; } #weibanner canvas{ height:calc(var(--s)*5px); width:auto; image-rendering:pixelated; }';
+    document.head.appendChild(c2); }
+  function bonusMark(){ bStar.hidden = !(TR.d.weiBonus && !TR.d.weiBonusSeen); }
+  // à l'ouverture de la boutique (bouton, manette…) : le message s'affiche pendant cette visite, l'étoile disparaît
+  new MutationObserver(() => {
+    if (!shopUI.isOpen()){ return; }
+    if (TR.d.weiBonus && !TR.d.weiBonusSeen){ bBanner.textContent = ''; bBanner.append(txt('wei.bonusShop', { n: fmtN(WEI_BONUS) }) + ' ', cvOf(DISC)); bBanner.hidden = false; TR.d.weiBonusSeen = 1; TR.save(); bonusMark(); sfx.mile(); }
+  }).observe($('shop'), { attributes:true, attributeFilter:['hidden', 'class'] });
+  new MutationObserver(() => { if (!shopUI.isOpen()) bBanner.hidden = true; }).observe($('shop'), { attributes:true, attributeFilter:['hidden'] });
+
   // ---------- Stelly aux couleurs de son équipe ----------
   // le corps prend la palette de l'équipe ; un costume porté (nœud, cravate, cape) garde son motif mais ne change plus la couleur
   { const p0 = paintStelly;
@@ -217,14 +233,15 @@ const WEI = (() => {
     }; }
   // « Tout remettre à zéro » : on repart aussi du choix d'équipe (et du bonus de bienvenue)
   { const r0 = resetAll;
-    resetAll = function(){ r0.apply(this, arguments); delete TR.d.weiBonus; TR.save(); try { localStorage.removeItem(K_TEAM); localStorage.removeItem(K_NAME); } catch(e){} paint(); repaintStelly(); };
+    resetAll = function(){ r0.apply(this, arguments); delete TR.d.weiBonus; delete TR.d.weiBonusSeen; TR.save(); try { ['stellyrunwei_onb1', 'stellyrunwei_onbseen', K_TEAM, K_NAME].forEach(k => localStorage.removeItem(k)); } catch(e){} bonusMark(); paint(); repaintStelly(); };
     new MutationObserver(() => { if (!setUI.isOpen() && state === 'title' && (!team() || !name()) && !isOpen) setTimeout(() => { if (!setUI.isOpen() && (!team() || !name()) && !isOpen) open(); }, 500); })
       .observe($('settings'), { attributes:true, attributeFilter:['class', 'hidden'] }); }
 
   if (!ATELIER){ flush(); addEventListener('online', flush); }
   paint(); repaintStelly();
   // joueurs qui avaient déjà choisi leur équipe avant le bonus de bienvenue : ils le reçoivent une fois
-  if (team() && name() && !TR.d.weiBonus){ TR.d.weiBonus = 1; TR.d.coins += WEI_BONUS; TR.save(); setTimeout(() => toast(txt('wei.bonus', { n: fmtN(WEI_BONUS) }), true), 1500); }
+  if (team() && name() && !TR.d.weiBonus){ TR.d.weiBonus = 1; TR.d.coins += WEI_BONUS; TR.save(); }
+  bonusMark();
   if (!team() || !name()) open();
   return { need: () => !team() || !name(), open, isOpen: () => isOpen || resOpen, results, send, flush, paint, team, name };
 })();
