@@ -9,6 +9,14 @@ const WEI_TEAMS = [
   { id:'jaune', c:'#FFCF00', d:'#A07A00' },
   { id:'vert',  c:'#3DBE5A', d:'#1E6E31' }
 ];
+const WEI_BONUS = 1000;   // disques offerts au premier choix d'équipe
+// Stelly prend la couleur de son équipe (en jeu et dans les aperçus de la boutique) ; Jaune : sa couleur d'origine
+const WEI_PAL = {
+  bleu:  { yellow:'#3FA3E0', yellowL:'#86CBF2', yellowM:'#62B8EC', orange:'#2B7DB8', orangeD:'#1F5F8F', cheek:'#9AD6F7' },
+  rouge: { yellow:'#E8384F', yellowL:'#FF7686', yellowM:'#F5596A', orange:'#B5243A', orangeD:'#8E1A2C', cheek:'#FF9AA8' },
+  jaune: null,
+  vert:  { yellow:'#3DBE5A', yellowL:'#84DE98', yellowM:'#5FCE76', orange:'#2A9443', orangeD:'#1E6E31', cheek:'#94E5A6' }
+};
 const WEI = (() => {
   const K_TEAM = 'stellyrunwei_team', K_NAME = 'stellyrunwei_fullname', K_Q = 'stellyrunwei_queue';
   const get = k => { try { return localStorage.getItem(k); } catch(e){ return null; } };
@@ -22,26 +30,36 @@ const WEI = (() => {
 
   // ---------- styles ----------
   const css = document.createElement('style');
-  css.textContent = '#wei{ position:absolute; inset:0; z-index:45; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:calc(var(--s)*5px);'
-    + ' background:repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 calc(var(--s)*6px), transparent 0 calc(var(--s)*12px)), var(--plum); padding:calc(var(--s)*4px); box-sizing:border-box; }'
+  css.textContent = '#wei{ position:absolute; inset:0; z-index:45; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:calc(var(--s)*3px); padding:calc(var(--s)*4px); box-sizing:border-box;'
+    + ' background:radial-gradient(ellipse at 50% 115%, rgba(255,207,0,.22), transparent 55%), radial-gradient(ellipse at 50% -20%, rgba(165,139,198,.35), transparent 60%),'
+    + ' repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 calc(var(--s)*6px), transparent 0 calc(var(--s)*12px)), var(--plum); }'
     + '#wei[hidden]{ display:none; }'
-    + '#wei h2{ margin:0; font-size:max(calc(var(--s)*9px),18px); color:var(--yellow); -webkit-text-stroke:calc(var(--s)*1.2px) var(--plum); paint-order:stroke fill; text-shadow:0 calc(var(--s)*1.5px) 0 #000; text-align:center; }'
-    + '#weiteams{ display:flex; gap:calc(var(--s)*5px); }'
-    + '#weiteams button{ font:inherit; position:relative; width:calc(var(--s)*40px); height:calc(var(--s)*46px); border:calc(var(--s)*1.5px) solid var(--plum); border-radius:calc(var(--s)*3px); cursor:pointer; padding:0;'
-    + ' display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:calc(var(--s)*1px); padding-bottom:calc(var(--s)*3px); box-sizing:border-box;'
-    + ' box-shadow:inset 0 calc(var(--s)*-3px) 0 rgba(0,0,0,.25), 0 calc(var(--s)*2.5px) 0 #000; transition:transform .12s; opacity:.55; }'
-    + '#weiteams button canvas{ height:calc(var(--s)*28px); width:auto; image-rendering:pixelated; }'
-    + '#weiteams button b{ font-size:max(calc(var(--s)*5.5px),11px); color:#fff; -webkit-text-stroke:calc(var(--s)*.9px) var(--plum); paint-order:stroke fill; letter-spacing:.04em; }'
-    + '#weiteams button.on{ opacity:1; transform:translateY(calc(var(--s)*-3px)) scale(1.06); outline:calc(var(--s)*1.5px) solid #fff; outline-offset:calc(var(--s)*1px); }'
-    + '#weiteams button.on::after{ content:"✓"; position:absolute; top:calc(var(--s)*-4px); right:calc(var(--s)*-4px); width:calc(var(--s)*9px); height:calc(var(--s)*9px); border-radius:50%;'
-    + ' background:#fff; color:var(--plum); font-weight:700; font-size:max(calc(var(--s)*5px),10px); display:flex; align-items:center; justify-content:center; border:calc(var(--s)*1px) solid var(--plum); }'
-    + '#weiname{ width:min(calc(var(--s)*150px), 86vw); box-sizing:border-box; font:inherit; font-weight:700; font-size:max(calc(var(--s)*6px),16px); padding:calc(var(--s)*2.5px) calc(var(--s)*4px);'
-    + ' border:calc(var(--s)*1.5px) solid var(--plum); border-radius:calc(var(--s)*2px); background:#fff; color:var(--plum); text-align:center; outline:none; }'
-    + '#weiname:focus{ box-shadow:0 0 0 calc(var(--s)*1.5px) var(--yellow); }'
+    + '#wei h2{ margin:0; font-size:max(calc(var(--s)*11px),20px); color:var(--yellow); -webkit-text-stroke:calc(var(--s)*1.4px) var(--plum); paint-order:stroke fill; text-shadow:0 calc(var(--s)*1.6px) 0 var(--orange), 0 calc(var(--s)*2.6px) 0 #000; letter-spacing:.02em; text-align:center; }'
+    + '#wei .sub{ margin:calc(var(--s)*-1px) 0 calc(var(--s)*5px); font-weight:700; font-size:max(calc(var(--s)*4.6px),10px); color:var(--purple-l); letter-spacing:.06em; text-transform:uppercase; text-align:center; }'
+    + '#weiteams{ display:flex; gap:calc(var(--s)*8px); align-items:flex-end; }'
+    + '#weiteams button{ font:inherit; position:relative; width:calc(var(--s)*52px); height:calc(var(--s)*70px); padding:0; border-radius:calc(var(--s)*4px); border:calc(var(--s)*1.6px) solid #000; overflow:hidden; cursor:pointer;'
+    + ' background:linear-gradient(170deg, var(--c) 0 58%, var(--d) 58%); box-shadow:inset 0 calc(var(--s)*-3px) 0 rgba(0,0,0,.25), 0 calc(var(--s)*3px) 0 #000; transition:transform .15s, filter .15s; filter:saturate(.75) brightness(.8); }'
+    + '#weiteams button::before{ content:""; position:absolute; inset:0; background:repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 calc(var(--s)*4px), transparent 0 calc(var(--s)*8px)); }'
+    + '#weiteams .ray{ position:absolute; left:50%; top:38%; width:calc(var(--s)*80px); height:calc(var(--s)*80px); transform:translate(-50%,-50%); background:repeating-conic-gradient(rgba(255,255,255,.16) 0 10deg, transparent 10deg 30deg); border-radius:50%; opacity:0; animation:weispin 9s linear infinite; }'
+    + '@keyframes weispin{ to{ transform:translate(-50%,-50%) rotate(360deg); } }'
+    + '#weiteams canvas{ position:absolute; left:50%; bottom:calc(var(--s)*17px); transform:translateX(-50%); height:calc(var(--s)*52px); width:auto; image-rendering:pixelated; }'
+    + '#weiteams .nm{ position:absolute; left:0; right:0; bottom:calc(var(--s)*7.5px); text-align:center; font-weight:700; font-size:max(calc(var(--s)*6.5px),13px); color:#fff; -webkit-text-stroke:calc(var(--s)*1px) #000; paint-order:stroke fill; letter-spacing:.04em; text-transform:uppercase; }'
+    + '#weiteams .ct{ position:absolute; left:0; right:0; bottom:calc(var(--s)*2.5px); text-align:center; font-weight:700; font-size:max(calc(var(--s)*3.6px),8px); color:rgba(255,255,255,.85); min-height:1em; }'
+    + '#weiteams button.on{ transform:translateY(calc(var(--s)*-5px)) scale(1.08); filter:none; border-color:#fff;'
+    + ' box-shadow:inset 0 calc(var(--s)*-3px) 0 rgba(0,0,0,.25), 0 calc(var(--s)*3px) 0 #000, 0 0 0 calc(var(--s)*2px) var(--yellow), 0 0 calc(var(--s)*14px) var(--c); }'
+    + '#weiteams button.on .ray{ opacity:1; }'
+    + '#weiteams button.on::after{ content:"✓"; position:absolute; top:calc(var(--s)*2.5px); right:calc(var(--s)*2.5px); width:calc(var(--s)*9px); height:calc(var(--s)*9px); border-radius:50%; background:var(--yellow); color:var(--plum);'
+    + ' border:calc(var(--s)*1px) solid #000; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:max(calc(var(--s)*5px),10px); }'
+    + '#weirow{ display:flex; align-items:center; gap:calc(var(--s)*4px); margin-top:calc(var(--s)*9px); }'
+    + '#weiname{ width:calc(var(--s)*92px); max-width:44vw; box-sizing:border-box; font:inherit; font-weight:700; font-size:max(calc(var(--s)*6px),15px); padding:calc(var(--s)*2.5px) calc(var(--s)*4px);'
+    + ' border:calc(var(--s)*1.5px) solid #000; border-radius:calc(var(--s)*2.5px); background:#fff; color:var(--plum); text-align:center; outline:none; box-shadow:0 calc(var(--s)*2px) 0 #000; }'
+    + '#weiname:focus{ box-shadow:0 calc(var(--s)*2px) 0 #000, 0 0 0 calc(var(--s)*1.5px) var(--yellow); }'
     + '#weimsg{ margin:0; min-height:1.2em; font-weight:700; font-size:max(calc(var(--s)*4.5px),11px); color:#FF9AA8; text-align:center; }'
-    + '#weinote{ margin:0; font-size:max(calc(var(--s)*4.2px),10px); color:var(--purple-l); text-align:center; max-width:calc(var(--s)*170px); }'
-    + '#weigo, #weicancel{ font-size:max(calc(var(--s)*7px),14px); }'
-    + '#weirow{ display:flex; gap:calc(var(--s)*4px); }'
+    + '#weinote{ margin:0; font-size:max(calc(var(--s)*4.2px),10px); color:var(--purple-l); text-align:center; max-width:calc(var(--s)*200px); }'
+    + '#weigo, #weicancel{ position:relative; font-size:max(calc(var(--s)*7px),14px); }'
+    + '#weigift{ position:absolute; left:50%; top:calc(var(--s)*-9px); transform:translateX(-50%) rotate(-4deg); display:flex; align-items:center; gap:calc(var(--s)*1.5px); white-space:nowrap; padding:calc(var(--s)*.8px) calc(var(--s)*3px);'
+    + ' border-radius:calc(var(--s)*2px); background:#3DBE5A; border:calc(var(--s)*1px) solid #000; color:#fff; font-family:var(--num); font-size:max(calc(var(--s)*3.6px),8px); text-shadow:0 1px 0 #000; pointer-events:none; }'
+    + '#weigift[hidden]{ display:none; } #weigift canvas{ height:calc(var(--s)*4.5px); width:auto; image-rendering:pixelated; }'
     + '#weitag{ display:inline-flex; align-items:center; gap:calc(var(--s)*1.5px); margin-top:calc(var(--s)*1.5px); padding:calc(var(--s)*.6px) calc(var(--s)*2.5px); border-radius:calc(var(--s)*2px);'
     + ' border:calc(var(--s)*.8px) solid var(--plum); color:#fff; font-weight:700; font-size:max(calc(var(--s)*4px),9px); letter-spacing:.05em; text-transform:uppercase; -webkit-text-stroke:calc(var(--s)*.6px) var(--plum); paint-order:stroke fill; pointer-events:none; }'
     + '#weititle{ position:absolute; top:calc(var(--s)*4px); left:calc(var(--s)*4px); z-index:2; display:flex; align-items:center; gap:calc(var(--s)*2px); max-width:40%;'
@@ -61,32 +79,46 @@ const WEI = (() => {
     + '#weires .btn{ position:absolute; z-index:1; top:calc(var(--s)*5px); right:calc(var(--s)*5px); }';
   document.head.appendChild(css);
 
-  // ---------- écran de choix ----------
+  // ---------- écran de choix : 4 cartes « maillot », Stelly aux couleurs de chaque équipe ----------
   const page = document.createElement('div'); page.id = 'wei'; page.hidden = true; page.setAttribute('role', 'dialog'); page.setAttribute('aria-modal', 'true');
-  page.innerHTML = '<h2></h2><div id="weiteams"></div><input id="weiname" maxlength="40" autocomplete="name" spellcheck="false"><p id="weimsg"></p><p id="weinote" hidden></p>'
-    + '<div id="weirow"><button type="button" class="btn alt" id="weicancel" hidden></button><button type="button" class="btn" id="weigo"></button></div>';
+  page.innerHTML = '<h2></h2><p class="sub"></p><div id="weiteams"></div>'
+    + '<div id="weirow"><input id="weiname" maxlength="40" autocomplete="name" spellcheck="false"><button type="button" class="btn alt" id="weicancel" hidden></button>'
+    + '<button type="button" class="btn" id="weigo"><span id="weigift" hidden></span><span class="lab"></span></button></div><p id="weimsg"></p><p id="weinote" hidden></p>';
   $('news').parentElement.appendChild(page);
   const grid = page.querySelector('#weiteams'), inp = page.querySelector('#weiname'), msg = page.querySelector('#weimsg'), note = page.querySelector('#weinote');
-  const go = page.querySelector('#weigo'), cancel = page.querySelector('#weicancel');
-  let pick = null, isOpen = false, after = null;
+  const go = page.querySelector('#weigo'), cancel = page.querySelector('#weicancel'), gift = page.querySelector('#weigift');
+  let pick = null, isOpen = false, after = null, counts = {};
+  const card = {};
+  const sprite = (t, pose) => { const c = mk(SW, SH + PAD); c.opt = pose; c.weiTeam = t.id; paintStelly(c, {}); return c; };
   function cards(){
     grid.textContent = '';
     for (const t of WEI_TEAMS){
-      const b = document.createElement('button'); b.type = 'button'; b.dataset.id = t.id; b.style.background = 'linear-gradient(' + t.c + ' 0 62%, ' + t.d + ' 62%)';
+      const b = document.createElement('button'); b.type = 'button'; b.dataset.id = t.id; b.style.setProperty('--c', t.c); b.style.setProperty('--d', t.d);
       b.classList.toggle('on', pick === t.id); b.setAttribute('aria-pressed', pick === t.id ? 'true' : 'false');
-      b.appendChild(cvOf(RUN[0])); const l = document.createElement('b'); l.textContent = tName(t); b.appendChild(l);
+      const ray = document.createElement('i'); ray.className = 'ray';
+      const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = tName(t);
+      const ct = document.createElement('span'); ct.className = 'ct'; ct.textContent = counts[t.id] != null ? txt(counts[t.id] > 1 ? 'wei.players' : 'wei.player', { n: counts[t.id] }) : '';
+      b.append(ray, sprite(t, pick === t.id ? POSES.apex : POSES.run[0]), nm, ct);
       b.addEventListener('click', e => { e.stopPropagation(); pick = t.id; msg.textContent = ''; sfx.disc(1); cards(); });
-      grid.appendChild(b);
+      grid.appendChild(b); card[t.id] = b;
     }
   }
+  // nombre de joueurs par équipe, en direct
+  async function loadCounts(){
+    if (!WEI_URL) return;
+    try { const r = await (await fetch(WEI_URL + '?id=' + encodeURIComponent(LB.id), { cache:'no-store' })).json();
+      if (r && r.teams){ r.teams.forEach(t => counts[t.id] = t.players || 0); if (isOpen) cards(); } } catch(e){}
+  }
   function texts(){
-    page.querySelector('h2').textContent = txt('wei.pick'); inp.placeholder = txt('wei.name'); inp.setAttribute('aria-label', txt('wei.name'));
-    go.textContent = txt(team() && name() ? 'wei.ok' : 'wei.go'); cancel.textContent = txt('ui.close'); note.textContent = txt('wei.move');
+    page.querySelector('h2').textContent = txt('wei.pick'); page.querySelector('.sub').textContent = txt('wei.sub');
+    inp.placeholder = txt('wei.name'); inp.setAttribute('aria-label', txt('wei.name'));
+    go.querySelector('.lab').textContent = txt(team() && name() ? 'wei.ok' : 'wei.go'); cancel.textContent = txt('ui.close'); note.textContent = txt('wei.move');
+    gift.hidden = !!TR.d.weiBonus; gift.innerHTML = ''; gift.append('+' + fmtN(WEI_BONUS) + ' ', cvOf(DISC), ' ' + txt('wei.gift'));
   }
   function open(then){
     after = then || null; const first = !team() || !name();
     pick = team() ? team().id : null; inp.value = name(); msg.textContent = '';
-    cancel.hidden = first; note.hidden = first; texts(); cards();
+    cancel.hidden = first; note.hidden = first; texts(); cards(); loadCounts();
     page.hidden = false; isOpen = true; $('soundmenu').hidden = true; $('langbtn').hidden = true;
   }
   function close(){ page.hidden = true; isOpen = false; if (state === 'title') $('langbtn').hidden = false; }
@@ -95,7 +127,9 @@ const WEI = (() => {
     if (!pick){ msg.textContent = txt('wei.needTeam'); return; }
     if (n.length < 2){ msg.textContent = txt('wei.needName'); inp.focus(); return; }
     const before = team() && team().id, beforeN = name(), changed = before && (before !== pick || beforeN !== n);
-    set(K_TEAM, pick); set(K_NAME, n); sfx.sock(); close(); paint();
+    set(K_TEAM, pick); set(K_NAME, n); sfx.sock(); close(); paint(); repaintStelly();
+    // bonus de bienvenue : une seule fois par partie sauvegardée (pas à chaque changement d'équipe)
+    if (!TR.d.weiBonus){ TR.d.weiBonus = 1; TR.d.coins += WEI_BONUS; TR.save(); setTimeout(() => { toast(txt('wei.bonus', { n: fmtN(WEI_BONUS) }), true); sfx.mile(); }, 300); }
     if (changed) profile();
     const f = after; after = null; if (f) f();
   }
@@ -172,8 +206,25 @@ const WEI = (() => {
   res.addEventListener('pointerdown', e => e.stopPropagation());
   addEventListener('keydown', e => { if (!resOpen) return; e.stopPropagation(); if (e.code === 'Escape' || e.code === 'Space'){ e.preventDefault(); if (e.code === 'Escape') closeRes(); } }, true);
 
+  // ---------- Stelly aux couleurs de son équipe ----------
+  // le corps prend la palette de l'équipe ; un costume porté (nœud, cravate, cape) garde son motif mais ne change plus la couleur
+  { const p0 = paintStelly;
+    paintStelly = function(c, eq){
+      const t = c.weiTeam ? teamOf(c.weiTeam) : team(), pal = t && WEI_PAL[t.id];
+      if (!pal || c.bare) return p0.call(this, c, eq);
+      const e = Object.assign({}, eq || EQUIPPED); e.shirt = Object.assign({}, e.shirt || {}, { pal, sheen:false });
+      return p0.call(this, c, e);
+    }; }
+  // « Tout remettre à zéro » : on repart aussi du choix d'équipe (et du bonus de bienvenue)
+  { const r0 = resetAll;
+    resetAll = function(){ r0.apply(this, arguments); delete TR.d.weiBonus; TR.save(); try { localStorage.removeItem(K_TEAM); localStorage.removeItem(K_NAME); } catch(e){} paint(); repaintStelly(); };
+    new MutationObserver(() => { if (!setUI.isOpen() && state === 'title' && (!team() || !name()) && !isOpen) setTimeout(() => { if (!setUI.isOpen() && (!team() || !name()) && !isOpen) open(); }, 500); })
+      .observe($('settings'), { attributes:true, attributeFilter:['class', 'hidden'] }); }
+
   if (!ATELIER){ flush(); addEventListener('online', flush); }
-  paint();
+  paint(); repaintStelly();
+  // joueurs qui avaient déjà choisi leur équipe avant le bonus de bienvenue : ils le reçoivent une fois
+  if (team() && name() && !TR.d.weiBonus){ TR.d.weiBonus = 1; TR.d.coins += WEI_BONUS; TR.save(); setTimeout(() => toast(txt('wei.bonus', { n: fmtN(WEI_BONUS) }), true), 1500); }
   if (!team() || !name()) open();
   return { need: () => !team() || !name(), open, isOpen: () => isOpen || resOpen, results, send, flush, paint, team, name };
 })();

@@ -1,101 +1,6 @@
 {
  "items": [
   {
-   "id": "shirt-violet",
-   "slot": "shirt",
-   "key": "violet",
-   "price": 400,
-   "name": {
-    "fr": "Costume violet",
-    "en": "Purple Suit",
-    "es": "Traje morado"
-   },
-   "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAeCAYAAADU8sWcAAABr0lEQVR42t1XsUoDQRB9e1gJYkAhGMEmYMRGSRsEO4XgZ5gmf5AP8A9szs8IQkrhuDZcmhADaYRcCCgEBNu1mnNzmezubTaCDlyzubv3Zm7em4mQUsI1zkq38mD3BAAQp6Eo+nzgA/j89MLpHYEP4HQ2xf31o/y1zH1E4CPr59cH4QIuijQcB6xG5egYTy9t8SfKbp15s9axurFI9ivgXNfmy2sCB2BFQNT2b7TfUY18Y1E18udqAjoS1uBFO7pZ60iqghoqmZ1tNhSnBrUqwWjREx9fbwCA4XgAjq1PMnRlUssTcDWNjRwuTkNB02kbFaCkSI6szhuVluSaz7bbdZ6g+sAKuMlCN4m8Aa3Yq6kBdf2g/jaZ943Ox5ZdzR4ASnuHVgSo3JN5H1eXd4iSLqrl+lrLZQfLaNHLbnTZUqrlOtLZVAusnWq6nYxrKO7MNGS0DhenoVi3HtlOuf+zRvkM42DR6VyVoYsfaMG5702Aw/EAi8/3TBF0XoQEC96otKQqM3pxlHSXNE5+MBwPnEgY7TVKuku6N221eW9wktqPztvGDIgcVwlve7vvP5Dfu0gIfywQcgUAAAAASUVORK5CYII=",
-   "dx": -15,
-   "dy": -16,
-   "pal": {
-    "orangeD": "#270F47",
-    "orange": "#3A1965",
-    "yellowM": "#643F94",
-    "yellow": "#4A2679",
-    "yellowL": "#643F94",
-    "cheek": "#3A1965"
-   },
-   "iconSrc": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAByklEQVR4AcSWsUrEQBCGcyltLKxOwfIEG60FsRQE30I7X8D3sNO3sLIUwVK0ERRsBD0EBUWwjXwLc0x2k93s5jYn/JfN7Mz8XyZ3iWWx4L9eABvL+9XO+Ngo9TqSATBfWVo3vpuTLXNM+UgCsM3fp2/F0d5ZNRhAilFbTfQEmq6+rXmXeBSAzzz1NkQBdLmi2JzOAHzJdrcPC77xiCu2zYiRZ8d95w4ADWwdTE4rmmv5mlLv29d7JfdVHiYUahNZ64LQmhpy6IVY++RMwJfcdQ8IRD4QWsS0sgCIARBaxG2Y8unnavT198pe8fj8UKyO18w6x4cNg4eZwJAQmGoZAB0YYs2UL65PRnjNAIaagjavAXCSG8I2x3M2AU5QLogmc/wcAIJa8/hltJnj0wjAFNhEbc999rrIZ059IwAb81DIHI+sABiE5AXoO/6QOfteABJyqxcA91iUCtoIwBuL8Tc1FcPv30/z8uJnSp7EWcfIAcCcpkgaSfOXj7uCZzi6nZ7X3qKSL7lSGzo6ADf3l7UabaqfDyRx7gMhJyQHQApozJViIrG2Iznk6/8rZCJtNRJ3AKSZJMQcpVaDhOodgFBBl30BYSqh/H8AAAD///YG/qsAAAAGSURBVAMAO8cvUHzf/ZIAAAAASUVORK5CYII="
-  },
-  {
-   "id": "shirt-vert",
-   "slot": "shirt",
-   "key": "vert",
-   "price": 400,
-   "name": {
-    "fr": "Costume vert",
-    "en": "Green Suit",
-    "es": "Traje verde"
-   },
-   "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAeCAYAAADU8sWcAAABs0lEQVR42t1XsUrDUBQ9LzgJUhGhWEGIg8VJKd1chA66+AmuXfoH/QD/wCWrn9Cli+CSLZRkCnZoQWhKQaQiuD6nF16T2/deXl8FvZDlNck59+aec28Z5xy2sX97yndPDgAAWRCxqs97LoDPLs6t3uG5AJ7PMlw/3vNfy9xFeC6yfn14ZjbgrErDUcByHB038NJ7Yn+i7MaZN/sdoxurZF8Cp7q2WF4dOAAjAqx24yu/oxzFxhLVKJ7LCahIGINX7ehmv8NFFeSQyexss6EoNchV8ZbDCft++wAAjJMUFFuXZMSVS61IwNY0NnK4LIiYmE7bqIBISsiR1Hmj2+ZU85l2u8oTZB8ogessdJMoGlDJXnUNqOoH+bfFaKp1PrLscvYAsHdYMyIgyr0YTXF5d4V4EKLe8tdaLjlYlsNJfqPNllJv+ZjPMiWwcqqpdjKqoagz3ZBROlwWRGzdemQ65f7PGuUytINFpXNZhjZ+oASnvrcAHCcpvt4/c0WI8yokSPBGt81lmYkXx4NwRePCD8ZJakVCa6/xIFzRvW6rLXqDldRynff05RPkqEo429td/4H8AYhSCLCR+DmAAAAAAElFTkSuQmCC",
-   "dx": -15,
-   "dy": -16,
-   "pal": {
-    "orangeD": "#0F4721",
-    "orange": "#196533",
-    "yellowM": "#3F945C",
-    "yellow": "#267942",
-    "yellowL": "#3F945C",
-    "cheek": "#196533"
-   },
-   "iconSrc": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABv0lEQVR4AcyWv0oEMRCHc1vaCHanINgIVgqWFpZWvoGtnY9jZ+tLWPoAClaCzYGghyDCIdiefIE55pJMbjd7uT8wl2Qymd+X2d3sNm7Nv14A2xcH0+H1qbfSfRQDIL61v+N1D4+PfFvyVwQQio8/Pt357dV0ZQAlQtaazhVI7d5K3sbfCSAnXnoZOgG02VHXmNYA3GQnl2eOOx5jx6EYPuJCf24cAZAgZSTXlkvK+ty8nmu4rnKYsFCL6L5elOuzhnlyYfRzFlUgF9x2DgiMeCC04dNWBUAEgNCGP4RpJg+jwd/7D3Pu7eXVDfd2fb/GXwiDhq/AKiEQ1eYBtIN+7UpQ5ceb+wFaMwBdBSZqmRZHYwbAQEPUqEIojuYcAI5aEClx9CIAnNqohB6X9C1xciUBdBU49wkstZw4OZMATCzDFomjkQTg/SDfewTVtCRATcEw9+YDcH6H1DLmGouJr2sbVUBf/9QTIIK/3xP/8pLHVPy9AVIJJPnX88hxhmPju6e5t2gpSFSBEECLcj7oecY5EB1r9U0AvhHYKSLWYvETY4FIjNVGAJKM1lpk+VkTglix4o8AZKJPKyDALMrzDwAA//+u0ThKAAAABklEQVQDAJoGLFAySCxGAAAAAElFTkSuQmCC"
-  },
-  {
-   "id": "shirt-bleu",
-   "slot": "shirt",
-   "key": "bleu",
-   "price": 400,
-   "name": {
-    "fr": "Costume bleu",
-    "en": "Blue Suit",
-    "es": "Traje azul"
-   },
-   "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAeCAYAAADU8sWcAAABtklEQVR42mP8//8/A7lA3yvnPyuvNAMDAwPDmZWVjKTqZ6KGxfLKmmSZwUQNi1+/eskQXLXhP918Tg3ARA1fH5qTzkiO5YykJDhsFiMDUTFxhrVtAYxDItiJ9rldykyiFJLiewzLsaVa9OAlZDkDAwNRDmDU88zGG4/IAD1hwUIDXRzZA/gcQbTlpKZou5SZ/2GhgAyQHcNCywSFLTcghwrTxW1TGH9/fsrAwMDA8PDudQZsrqWmY2AYntXQHUBuoUFRCXdmZSUjrHaiRQjAPAXLjljzuUl4+39siY/Y1I6vTEAuBzAsJ1SEUgLQCyCM4pVQAsSXHpDlPj67TLDkwxrsyL5nYGBg4OIVIsoBsOD++Owyg4qBC8OdC3sY+KV0cRa5WCuWi9umwBWS00rhl9JleP3qJV6L8dZq+Npk2BIUNjFClQzBWi24asN/chMdIcuHVjOKmoBgxYIvyJGzITlRw0IovnFZ+PDudYaHn9/BcwRMnBRHYLXcJLz9P3I2gxl858IepDweAC8PHt69TpYjCBavdy7sQcn3hFq16GUDvtTOQjifBxD0Acxx2EKCau12ancgAWAPCWMks9WRAAAAAElFTkSuQmCC",
-   "dx": -15,
-   "dy": -16,
-   "pal": {
-    "orangeD": "#2E496B",
-    "orange": "#335686",
-    "yellowM": "#5279AF",
-    "yellow": "#3D6398",
-    "yellowL": "#5279AF",
-    "cheek": "#335686"
-   },
-   "iconSrc": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB0ElEQVR4AcSWPUoEQRCFewcMDdXAwEATExG8gomhBl7CE+gB9ARewkBDT2GigZGBgYIKgiyYGKx8DbXU9k9NT0uPC2+6u/7e65qZnu3cP//+JGDn4GS2d3zuUbuPagGQLy2ve96NzW0/1lyqBITkH+9v7uj0ZjaagBqiXM7gDqR2nyteYh8kwCKvvQ2DBJTsaGhMsQAesq3dfccTD9hxSIaNuNBurSMBFEiB4hpWUfItv/Z13Fc5TEjUJHquk6w5OfipBZhbiDpgBZf6EAGIR4QGNo0mAoQAERrYQzHd/e3l5Gf6gs89Pz26ldU1P29xCcXA4TswpghINbwAbWDeuhN0+fricALXXIDuAo5W0ORwzAWw0CJadCEkh3NBAIZWIlLk8EUCMGrQCb2umefIqdUrgHOfwFpY5NTMCpCzgaBa9JFTNymA5wDnGEgKGINYOJIC+EJKQOsxKQBS+cvN+c06Be6xIOUvsWUFkJx6A4Twe/rpP17ymoqdvCFICpDdSyEp/vX64DjDwd3V2cJXtFZIJCC8/5o0fDtYW0JkA9YYCZBgzgF2ConYciMxOSG5HLFHAmg/5BSVoNKRnFBIX24kgAIU6ku0/ORTB1hx+H4BAAD//zUShLsAAAAGSURBVAMADecvUJHSHA8AAAAASUVORK5CYII="
-  },
-  {
-   "id": "shirt-collector",
-   "slot": "shirt",
-   "key": "collector",
-   "price": 1500,
-   "name": {
-    "fr": "Costume collector",
-    "en": "Collector Suit",
-    "es": "Traje coleccionista"
-   },
-   "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAeCAYAAADU8sWcAAAB40lEQVR42tVXsUoDQRB9G65a8g0KW2iT4ho/wRSKlf5AfkDQQlBIo2BpIX6GndjkE7RISFLEIgOpg02EK0JgLHSPvbu97N5lIziwzbK7s/P2vZlZwcyoa4PBgKMoAgC0Wi1RdX8jhGMpZa0zGiEcK6VARPxnkYewRoiov4adWs5FFcLlCAYAGcfzZhdKKfEvYAcz+w5+uzhll02nU/Y9swC7jbVKKe9giEjvccIv+v1+4R3b5yfoPb5Y1+eBs82bAay7RMa5Zq++gLbfi1TNYKxRyKGYnhNtk0/55yKiDCqNOI7FarUCACRJkr5ZCewbX0aPjM4tRYId7+2EHQB223eZyVmvm6KQgd2sTERUieU+Nut1heaCUkpY9TcajbRe81bQvmOemZl3Dm+teaCgc1vuDmVpxGXptYyAnm8vfB17SS1JEhuRxDqS+TguLSxxHKcL63YpADCZTEodO0vqeDxmKSU+n67SuYOHZ1eqdUbsVVK19AyHeL88M52ZI3xJLZGc0472rp3ldSvNxPH+TZhOZrlcrtWtHqa9ftxv3sMREdsqU16CpiLM9S7CRWUs14d+DTuYN3+KwWKxyMhQZ0N9ESml2clUj9z2E3G1ROYeCxLVIq/699Jo2JAI1reH/kB+A20DLS3pawHLAAAAAElFTkSuQmCC",
-   "dx": -15,
-   "dy": -16,
-   "pal": {
-    "orangeD": "#CFCFCF",
-    "orange": "#D3D3D3",
-    "yellowM": "#DDDDDD",
-    "yellow": "#FFFFFF",
-    "yellowL": "#DDDDDD",
-    "cheek": "#D3D3D3"
-   },
-   "detailSrc": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAWCAYAAAArdgcFAAAAfklEQVR42mNkIAF8upjwH8bm01/ASEg9E8NAgFOFwf8ZBjVwzfWhmQsZ0S3YPXkLI7UMp2mEMlHbtRjBQi0g59r0ny7B8mh3HfVDA931o4B24Pr16/8JJkXkAsusfy0jVXMosoGDomT0Uqv8T5OyBZfBREUKVS2gGUCugKkBAMbpLGRguhN3AAAAAElFTkSuQmCC",
-   "ddx": -10,
-   "ddy": -11,
-   "iconSrc": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACRUlEQVR4AcSWvWobQRSFx0KoEEmZOiAVUSEFVOQV3IR0eYF0qRJIGXDlkDKEvEAgdTrjxq/gQsJSIRcSuHZpo0IWyP4uXHE1uzuzO1rbgrMzc//Ombuz2m24Z/7tJWA0Gm0mk4kgdR/JAiBvNpvC2263ZUy5JAnwyTudjpvP55snE5BCVJRTuQN5u7+5+FRUP2qvJMCS9/t9R+uV/NXtcdJtqCQgup2EgNICNg+/u38/HDsHyvXy7V+noCNVD2NGAAV8PHDLCX/367/yBkfygwHG2eC+6p8JROzi8++vcn+ZAxMfnWo8IkAsYacDi8VC4s/+nLjDLx+2EGOFCyIAKYiwwGaxI8A66pgjwoKavpjGcDg8WK/X+NxyuXS2C2Ks8eKLobR0wBcxnU7xOW4FkEXi5fXhsbPwy4gA38haO8G8LlydHUkpane73QMWWwG2CzjqgpLqaMnh2ApgYUXY84BvHxSRU3NHAIbHEuHvHC6QEYDRgk7Ydcq8iJxauQLoAk6wz9fObDaTx1oPHPV85Arwg86/fXQK3xdat1otFyInt5QA+xJCCIl1oZQAyBChYB3D+zffYyHiLy1AokteypJTLlcAr2ecYLVaMeSC062wAaeXP+0yOM8VoBk8Ab1eT5cyKiHvCx5RgEPtzEFZEUEBFOKjU4uPx2M51ZzswWCw8xYtEkKNEDIC+EKyCdcvjrak9v+BGNYhIcTEkBGgCRRmp0BtRWNISFGO2jMCtJgGVBk1137gxPIzAmIJZfwqhC7G4u8BAAD//w1lij0AAAAGSURBVAMAKNZWUN1qDhsAAAAASUVORK5CYII="
-  },
-  {
    "id": "glasses-sun1",
    "slot": "glasses",
    "key": "sun1",
@@ -758,31 +663,6 @@
    "ddx": -32,
    "ddy": -6,
    "iconSrc": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABt0lEQVR4AeyTPU4DMRCFx7ScghJKEBKX4QpwFg7CLWgAURI6uAA1dCzvm2R2bWd3SSJ2EVLQPM+P7ZkvDjmwP/7LARqxhBTOYwHQfDSfFtJoQOSmtwCw2/sv1/QjywktQJQBiXgOHwDp8uLQQhqcpFksABjG0BD5LMoBZhlYD/nXAPxUUf2htsp3eQGGNk/nJ4Y0zXP5nawGGGvmewxFMY0YKfd9+a2sBrCmoY+xoGiWf+KoFR4IpGJ+T+m4rQFwnEZIMc18uOLCzh4XFso3snt5eTCuAZL+7PTh2S/QDHlSLTdHxxYKEDzHVneAJx1VDdAeBuLuvbEhtQcVBAgeCJRBAJJLNzrrA9AjJNNiV68LV3fcPKee1/KY/yEUEIDk0llg5JbWB8BO0iKGVIAwWMWipnNu7KHYB6Lv9XglXWghhgB0xi1pVc/kQxUotaRFYTIt7YsQI/akje0ngGiUFIQUunnOUKSK5/Jb2aYAY00HB/OVhIYa/AZAX289SvKvSIF7QK7fXgzpQpLcpgKgOUNaAaJi5AqXNiXAckK3MrzLVtGcAKuRpdsD7F9g/wKTv0D5o1vPvgEAAP//cpHY1AAAAAZJREFUAwAoarxB3w8y+wAAAABJRU5ErkJggg=="
-  },
-  {
-   "id": "shirt-adamantium",
-   "slot": "shirt",
-   "key": "adamantium",
-   "price": 0,
-   "trophy": "adamantium",
-   "sheen": true,
-   "name": {
-    "fr": "Armure d’adamantium",
-    "en": "Adamantium Armor",
-    "es": "Armadura de adamantio"
-   },
-   "pal": {
-    "yellow": "#C3CED6",
-    "yellowL": "#F2F6F8",
-    "yellowM": "#DCE3E8",
-    "orange": "#8E9EAC",
-    "orangeD": "#66778A",
-    "cheek": "#E9A3B4"
-   },
-   "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAgCAYAAAB3j6rJAAACuklEQVR4AdyXMWsUQRTHnweClYqiaHuN0YBJCiHFFTaCiFhYhbOxsBEbP4BlPoCN2ImN1wgWVoJNiisCFkkENVrYKoqiFiJYqL+Rd/ffuZnN7ixpEvjfvn3z5r3fvN2ZJT3r8Hf24OIfVYdU1gmEwss3h3b97h3MTioGoRNAzJ3qB4Anr54ZvnBT8FMEQkGFuHJhYMePHrbxx/VimCKQ1IK3tt+n3I19rUFS3fjw+asNlk4bMKVdaQ2SW+J4401uqJG/FUiuG1qptCuNQABAbFN2CS/nucUzxiNRCLX9ETFP/Tk7CcJkFVvz3trIKI7qAChEV7gCgzQXNmOxAgiDKgqTAAEQF751fmgqT6q+wYnl8PIyRh6V1sImpofBmUDbERAUZlWIIBXFtr5vmAofUh928P3b1uRxkUuhsGEIHWGwVAuHlpJTc34H8qtP7r38sblv/f7Itt/+P5CePh/byWNHfLz2miuW85OM84YrWpjrG48QhmxHmsKQsI1y500AgSjuCsl3guE9QMSq8CH1xbZ2g7EAgtEUhl1E61X4kPqw8ZE7VgzB+ASEmzYwFHExF/m9X/HFSkEQUwHBkYLhBWZMxdbUe7V17MXm68lQDoKAGRCcMcy1/QdMExLDqin4+NLQVPgYI4Y5PrcOgtgkCAMK8+j3L1zZbb26MjQUguSHz8G7+b7dWLk82aYyXDGzIJWozA0rX/tpNngwCsLGlwmvdWdBOHY5+vnakoEvLkc/torCKh1zm1PUj3L3xdcsSBy42/d7D4RTWNW2g507QnG2KWeNCwj8CLuJikEowplxdf6iPby9GqRfcKAAIA5h16k1CEkdgLNGxYcTqBTQpy/f6jja/e8bA8SZHaoOaDqnatV2hISsjlXyCLxQNcXsnccxn7meYzZy6smCaDK3p9OaWT4PILdzM/8CAAD//x1JKmwAAAAGSURBVAMAq7MNNQgND00AAAAASUVORK5CYII=",
-   "dx": -17,
-   "dy": -16,
-   "iconSrc": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACoUlEQVR4AaTVsY5NURgF4O0+gAghtNMYJIxCMsUUGolKoZxKKxoPoPQAGtGqplSoJBrFFJMoDAlGoyWEiBdgvsMv/5zZ+967j8msu9f+97/XWufcc/eZlYl/F4+u/cqYKFMmB2C4fnuz3HpwD52MSQFcOfPVsyuD8ZO3z4raMOn86A7AKJvfuLZRTp04VrY/70wK0R2gdoGv9z7WykvVugLUrv7T1+9l4/K5IsSUu9AVoHVJ26/et5YW1pcO0Lr67DDlLiwMwBj83Dz1Hrora+eLW5/NM4+vwr5cr/FDAWzK8BN7+GKrMIV5xgzcBaMQkLVwaxkzxQyGNgLjRYZZDL+0ujI8kOMg9CB74TO/abcXmDO0GQj2IMztwY1AC3AhMg59BZqmgGGY4KERNXM8YA6znUdbZe/Dn4Pk6fPtcubkcfUuMCRsE26EqOEZ0bNxer3+MuoJQSyM8DCKWsxjzD1qszc/d4+M74KFZUIQCyPcPoganpF7XD3v4RlAekMQCyM8jKIW8xhzT5hbGwIgPSGIhRFuP0QNz8g92VzPvwAmtRAeTGsBYmGERz1qMY8x94zN9RwIoDAOofZy952hEAsjfCjuf0Rtnx74zz01c82HAijWQhALI1wfRA3PyD0tc/3VABbG+PLtx1DKwovMW+uD0N+PagBntCPa20+fN6AjutdcvxCOXpq0xqgGGDeZEzMCUeMY0WMdN457xvOlA8TGlihDPdZxo/kidAVoiTo1PSOAt/pqYZYOUBNl5ifqrAgwUQd8EZYOkIWI37m6WW5euF4e370/IL9RhdGvD/AWugIQC2NnRYZ3iTC1IL6a/w4wNh4LRph5QcZ7zJt3gJCrcVVudRjYNA/RZ7+9odHaUw2QRYK3BFr12CdI8FrvbwAAAP//ps5UowAAAAZJREFUAwAuf+4mu9LHkQAAAABJRU5ErkJggg=="
   },
   {
    "id": "glasses-freddy",

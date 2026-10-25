@@ -50,6 +50,8 @@ P = [
   # pas de partie sans équipe
   ('function startGame(){\n  if (tutoUI.need()){', 'function startGame(){\n  if (WEI.need()){ WEI.open(); return; }\n  if (tutoUI.need()){', 'équipe avant de jouer'),
   ("localStorage.setItem('stellyrunwei_lang', l); } catch(e){} applyLang(); }", "localStorage.setItem('stellyrunwei_lang', l); } catch(e){} applyLang(); try { WEI.paint(); } catch(e){} }", 'langue'),
+  # pas d'Armure d'adamantium (elle changerait la couleur de Stelly)
+  ('function addTrophyItems(){\n', 'function addTrophyItems(){ return;\n', 'armure retirée'),
   # module équipes : tout à la fin, après les autres modules (il s'en sert)
   ("\n// le jeu est prêt : barre pleine", (HERE / 'wei.js').read_text(encoding='utf-8') + "\n// le jeu est prêt : barre pleine", 'module équipes'),
 ]
@@ -77,6 +79,11 @@ WT = '''  // édition équipes
   "wei.sent":     { fr:"Score envoyé pour l’équipe {t}", en:"Score sent for team {t}", es:"Puntuación enviada para el equipo {t}" },
   "wei.record":   { fr:"Record perso ! Envoyé pour l’équipe {t}", en:"Personal best! Sent for team {t}", es:"¡Récord personal! Enviado para el equipo {t}" },
   "wei.rank":     { fr:"ton équipe est {n}e", en:"your team is #{n}", es:"tu equipo va {n}.º" },
+  "wei.sub":      { fr:"Chaque partie compte pour ta couleur", en:"Every run counts for your colour", es:"Cada partida cuenta para tu color" },
+  "wei.players":  { fr:"{n} joueurs", en:"{n} players", es:"{n} jugadores" },
+  "wei.player":   { fr:"{n} joueur", en:"{n} player", es:"{n} jugador" },
+  "wei.gift":     { fr:"offerts", en:"free", es:"gratis" },
+  "wei.bonus":    { fr:"Bienvenue ! +{n} disques pour la boutique", en:"Welcome! +{n} discs for the shop", es:"¡Bienvenido! +{n} discos para la tienda" },
   "wei.later":    { fr:"Hors connexion : ton score partira plus tard", en:"Offline: your score will be sent later", es:"Sin conexión: tu puntuación se enviará más tarde" },
 '''
 lng = once(lng, '\n};\n\n/* Nouvelles du jeu', '\n' + WT.rstrip('\n') + '\n};\n\n/* Nouvelles du jeu', 'textes équipes')
@@ -121,6 +128,10 @@ eq = once(eq, '/*FONTS*/', fonts, 'polices').replace("/*URL*/''", json.dumps(CFG
 st = (HERE / 'stats.src.html').read_text(encoding='utf-8')
 st = once(st, '/*FONTS*/', fonts, 'polices stats').replace("/*URL*/''", json.dumps(CFG['url']))
 (ROOT / 'stats.html').write_text(st, encoding='utf-8')
-for f in ['stelly.js', 'boutique.json', 'trophees.json', 'obstacles.json']: shutil.copy(SRC / f, ROOT / f)
+for f in ['stelly.js', 'trophees.json', 'obstacles.json']: shutil.copy(SRC / f, ROOT / f)
+# boutique : sans les costumes qui changent la couleur de Stelly (elle porte la couleur de son équipe)
+NO_SHIRTS = {'shirt-bleu', 'shirt-vert', 'shirt-violet', 'shirt-collector', 'shirt-adamantium'}
+bq = json.loads((SRC / 'boutique.json').read_text(encoding='utf-8')); bq['items'] = [it for it in bq['items'] if it['id'] not in NO_SHIRTS]
+(ROOT / 'boutique.json').write_text(json.dumps(bq, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
 shutil.copytree(SRC / 'icons', ROOT / 'icons', dirs_exist_ok=True)
 print(f'[wei] édition équipes fabriquée depuis Stelly Run v{APP} (rev {CFG["rev"]}) · serveur : {CFG["url"] or "PAS ENCORE BRANCHÉ"}')

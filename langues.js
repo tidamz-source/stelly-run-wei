@@ -374,6 +374,11 @@ const TEXTS = {
   "wei.sent":     { fr:"Score envoyé pour l’équipe {t}", en:"Score sent for team {t}", es:"Puntuación enviada para el equipo {t}" },
   "wei.record":   { fr:"Record perso ! Envoyé pour l’équipe {t}", en:"Personal best! Sent for team {t}", es:"¡Récord personal! Enviado para el equipo {t}" },
   "wei.rank":     { fr:"ton équipe est {n}e", en:"your team is #{n}", es:"tu equipo va {n}.º" },
+  "wei.sub":      { fr:"Chaque partie compte pour ta couleur", en:"Every run counts for your colour", es:"Cada partida cuenta para tu color" },
+  "wei.players":  { fr:"{n} joueurs", en:"{n} players", es:"{n} jugadores" },
+  "wei.player":   { fr:"{n} joueur", en:"{n} player", es:"{n} jugador" },
+  "wei.gift":     { fr:"offerts", en:"free", es:"gratis" },
+  "wei.bonus":    { fr:"Bienvenue ! +{n} disques pour la boutique", en:"Welcome! +{n} discs for the shop", es:"¡Bienvenido! +{n} discos para la tienda" },
   "wei.later":    { fr:"Hors connexion : ton score partira plus tard", en:"Offline: your score will be sent later", es:"Sin conexión: tu puntuación se enviará más tarde" },
 };
 
