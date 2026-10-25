@@ -214,13 +214,14 @@ const WEI = (() => {
       + '@keyframes weipart{ from{ transform:translate(-50%,-50%); opacity:1; } to{ transform:translate(calc(-50% + var(--x)), calc(-50% + var(--y))); opacity:0; } }';
     document.head.appendChild(c2); }
   function bonusMark(){ bStar.hidden = !(TR.d.weiBonus && !TR.d.weiBonusSeen); }
-  // première visite de la boutique après le bonus : le compteur de disques monte jusqu'au total en 2 s, puis gerbe de particules et petit son
+  // première visite de la boutique après le bonus : le compteur de disques monte jusqu'au total en 1 s (son de disque attrapé à chaque cran), puis gerbe de particules
   function coinRain(){
-    const box = $('shcoins'), b = box.querySelector('b'), end = TR.d.coins, start = Math.max(0, end - WEI_BONUS), D = 2000;
-    let t0 = 0;
+    const box = $('shcoins'), b = box.querySelector('b'), end = TR.d.coins, start = Math.max(0, end - WEI_BONUS), D = 1000;
+    let t0 = 0, shown = start, lastS = 0;
     const step = now => {
       if (!t0) t0 = now; const u = Math.min(1, (now - t0) / D), v = Math.round(start + (end - start) * (1 - Math.pow(1 - u, 3)));
-      b.textContent = v;
+      // un « catch de disque » à chaque changement du nombre (au plus toutes les 40 ms), de plus en plus aigu
+      if (v !== shown){ shown = v; b.textContent = v; if (now - lastS > 40){ lastS = now; sfx.disc(1 + Math.floor(u * 8)); } }
       if (u < 1){ requestAnimationFrame(step); return; }
       b.textContent = end; box.classList.add('weigain'); sfx.mile(); setTimeout(() => box.classList.remove('weigain'), 600);
       const cols = [C.yellow, '#FFE777', C.white, '#F29318', '#3DBE5A'];
@@ -230,6 +231,12 @@ const WEI = (() => {
     };
     b.textContent = start; setTimeout(() => requestAnimationFrame(step), 450);
   }
+  // titre « Boutique » aligné à gauche sur le premier onglet (Chapeaux)
+  function alignShopHead(){ const head = $('shop').querySelector('.trhead'), tab = $('shop').querySelector('.shtab'); if (!head || !tab || !shopUI.isOpen()) return;
+    head.style.alignSelf = 'flex-start'; head.style.marginLeft = '0px';
+    head.style.marginLeft = Math.max(0, tab.getBoundingClientRect().left - head.getBoundingClientRect().left) + 'px'; }
+  new MutationObserver(() => requestAnimationFrame(alignShopHead)).observe($('shop'), { attributes:true, attributeFilter:['hidden', 'class'] });
+  addEventListener('resize', () => requestAnimationFrame(alignShopHead));
   new MutationObserver(() => {
     if (!shopUI.isOpen() || !TR.d.weiBonus || TR.d.weiBonusSeen) return;
     TR.d.weiBonusSeen = 1; TR.save(); bonusMark(); coinRain();
