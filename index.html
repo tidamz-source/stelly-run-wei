@@ -601,9 +601,9 @@ __ld(10); setTimeout(() => { const L = document.getElementById('loader'); if (L)
   </div>
 </div>
 <script>__ld(30);</script>
-<script src="langues.js?v=7.20"></script>
+<script src="langues.js?v=7.21"></script>
 <script>__ld(45);</script>
-<script src="stelly.js?v=7.20"></script>
+<script src="stelly.js?v=7.21"></script>
 <script>__ld(60);</script>
 <script>
 /* ================= Langues ================= */
@@ -1666,7 +1666,7 @@ let flyers = [], flyIn = 6, rbAt = -1;
 let obs = [], discs = [], items = [], parts = [], pops = [], confetti = [], debris = [], lines = [];
 let shark = null, sharkIn = 4;
 const P = { x:52, y:0, vy:0, ground:true, hold:false, buf:0, anim:0, sockT:0, dust:0, land:0, newBest:false };
-const APP_VERSION = '7.20';
+const APP_VERSION = '7.21';
 // icônes de trophées retouchées dans l'atelier (trophees.json) : remplacent celles dessinées par le code
 const TR_OVR = {}; let TR_OVR_N = 0;
 const THEME_NAMES = ['Outdoor', 'Indoor', 'Beach', 'Catch La Peuf', 'City', 'Forest', 'Fields'];
@@ -2033,7 +2033,7 @@ TR.retro(); refreshTrophyBadge();
 /* ================= Classement en ligne (Google Sheet) ================= */
 // classement des équipes (backend/Code.gs) ; le serveur du jeu officiel n'est jamais appelé
 const WEI_URL = "https://script.google.com/macros/s/AKfycbxkc6WIeFh6l9JiJNZJbhM2PDET4ZdB8MG7j7cRTZzkDpRcm-Kpuz39TwXzVeJzAwim/exec";
-const WEI_REV = '7.20-19';
+const WEI_REV = '7.21-20';
 const WEI_SECRET = 'wei-st3lly-4q8z';
 const LB_URL = WEI_URL;
 const LB_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -3235,7 +3235,7 @@ function draw(){
     ctx.save(); sqApply(ctx);
     if (fireT > 0 && state === 'play'){
       const col = Math.floor(clock*14) % 2 ? 'rgba(122,87,160,.7)' : 'rgba(255,255,255,.75)';
-      ctx.globalAlpha = .25; ctx.drawImage(tinted(spr, 'rgba(128,88,162,.85)'), px - 14, py); ctx.globalAlpha = .45; ctx.drawImage(TMP, px - 7, py); ctx.globalAlpha = 1;
+      trailGhosts(spr, px, py); ctx.globalAlpha = 1;
       ctx.drawImage(spr, px, py); ctx.drawImage(tinted(spr, col), px, py); drawHat(ctx, spr, px, py, EQUIPPED.hat, clock); drawSheen(ctx, spr, px, py, EQUIPPED.shirt, clock); hatTint(spr, px, py, col);
     } else { if ((graceT > 0 || safeT > 0) && state === 'play' && Math.floor(clock*16) % 2) ctx.globalAlpha = .4; ctx.drawImage(spr, px, py); drawHat(ctx, spr, px, py, EQUIPPED.hat, clock); drawSheen(ctx, spr, px, py, EQUIPPED.shirt, clock); ctx.globalAlpha = 1; }
     const blink = P.sockT > 0 && P.sockT < 1.6 && Math.floor(clock*10)%2;
@@ -4260,6 +4260,21 @@ new MutationObserver(() => { if (!ui.over.hidden) ONB.stop(); }).observe(ui.over
   lbEntry.submit = function(){ if (box.classList.contains('ask')){ box.classList.remove('ask'); lbEntry.hide(); return; } return sub0.apply(this, arguments); };
   ask.addEventListener('click', e => { e.stopPropagation(); box.classList.remove('ask'); sfx.disc(1); }); }
 
+
+/* ================= v7.21 : traînée d'invincibilité qui suit les mouvements de Stelly ================= */
+// chaque silhouette de la traînée reprend la hauteur et la pose qu'avait Stelly un court instant plus tôt
+// (décalée de la distance parcourue par le décor pendant ce temps) : la traînée dessine l'arc du saut
+const TRAIL = [];
+function trailGhosts(spr, px, py){
+  const now = clock; TRAIL.push({ t: now, y: py, spr });
+  while (TRAIL.length > 2 && now - TRAIL[1].t > .2) TRAIL.shift();
+  const sp = Math.max(60, spEff);
+  for (const [dx, a] of [[27, .15], [18, .25], [9, .42]]){   // de la plus ancienne à la plus récente
+    const age = dx / sp; let s = TRAIL[0];
+    for (const e of TRAIL){ if (now - e.t >= age) s = e; else break; }
+    ctx.globalAlpha = a; ctx.drawImage(tinted(s.spr, 'rgba(128,88,162,.85)'), px - dx, s.y);
+  }
+}
 
 /* ================= Édition équipes : choix de l'équipe, nom complet, envoi des scores ================= */
 // Au tout premier lancement : on choisit son équipe (4 couleurs) et on écrit son nom.
