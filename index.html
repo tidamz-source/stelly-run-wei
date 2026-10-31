@@ -602,9 +602,9 @@ __ld(10); setTimeout(() => { const L = document.getElementById('loader'); if (L)
   </div>
 </div>
 <script>__ld(30);</script>
-<script src="langues.js?v=7.24"></script>
+<script src="langues.js?v=7.25"></script>
 <script>__ld(45);</script>
-<script src="stelly.js?v=7.24"></script>
+<script src="stelly.js?v=7.25"></script>
 <script>__ld(60);</script>
 <script>
 /* ================= Langues ================= */
@@ -1667,7 +1667,7 @@ let flyers = [], flyIn = 6, rbAt = -1;
 let obs = [], discs = [], items = [], parts = [], pops = [], confetti = [], debris = [], lines = [];
 let shark = null, sharkIn = 4;
 const P = { x:52, y:0, vy:0, ground:true, hold:false, buf:0, anim:0, sockT:0, dust:0, land:0, newBest:false };
-const APP_VERSION = '7.24';
+const APP_VERSION = '7.25';
 // icônes de trophées retouchées dans l'atelier (trophees.json) : remplacent celles dessinées par le code
 const TR_OVR = {}; let TR_OVR_N = 0;
 const THEME_NAMES = ['Outdoor', 'Indoor', 'Beach', 'Catch La Peuf', 'City', 'Forest', 'Fields'];
@@ -2055,7 +2055,7 @@ TR.retro(); refreshTrophyBadge();
 /* ================= Classement en ligne (Google Sheet) ================= */
 // classement des équipes (backend/Code.gs) ; le serveur du jeu officiel n'est jamais appelé
 const WEI_URL = "https://script.google.com/macros/s/AKfycbxkc6WIeFh6l9JiJNZJbhM2PDET4ZdB8MG7j7cRTZzkDpRcm-Kpuz39TwXzVeJzAwim/exec";
-const WEI_REV = '7.24-29';
+const WEI_REV = '7.25-30';
 const WEI_SECRET = 'wei-st3lly-4q8z';
 const LB_URL = WEI_URL;
 const LB_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -3300,6 +3300,7 @@ function frame(ts){
 
 /* ================= Responsive ================= */
 function resize(){
+  const GY0 = GY;
   const vw = wrap.parentElement.clientWidth, vh = wrap.parentElement.clientHeight, a = vw/vh;
   wide = a >= 1.5;
   if (wide){ H = 200; W = Math.max(300, Math.min(460, Math.round(200*a))); GY = H - 36; }
@@ -3314,8 +3315,15 @@ function resize(){
   rs.setProperty('--s', s.toFixed(3)); rs.setProperty('--gy', GY);
   rs.setProperty('--py', lay.py); rs.setProperty('--ry', lay.ry); rs.setProperty('--by', lay.by); rs.setProperty('--ly', lay.ly);
   buildThemes(); RAYS = null;
-  if (state === 'title' || P.ground) P.y = GY;
-  obs.length = 0; discs.length = 0; items.length = 0;
+  // v7.25 : en pleine partie (pause quand on tourne le téléphone), on garde la piste : tout ce qui est posé
+  // par rapport au sol suit le nouveau sol ; sur l'écran d'accueil, on repart d'une piste vide comme avant
+  if (state === 'title'){ P.y = GY; obs.length = 0; discs.length = 0; items.length = 0; return; }
+  const dy = GY - GY0; if (!dy) return;
+  P.y += dy;
+  for (const d of discs) d.y += dy;
+  for (const it of items) it.y += dy;
+  for (const f of flyers){ f.y0 += dy; if (f.ky != null) f.ky += dy; }
+  for (const a of [debris, pops, parts]) for (const o of a) if (o.y != null) o.y += dy;
 }
 
 /* ----- Changement de langue ----- */
