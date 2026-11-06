@@ -5,7 +5,7 @@
   "lang": "fr",
   "id": "./",
   "start_url": "./index.html",
-  "scope": "./index.html",
+  "scope": "./",
   "display": "fullscreen",
   "display_override": [
     "fullscreen",

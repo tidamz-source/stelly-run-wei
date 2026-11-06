@@ -242,7 +242,18 @@ const WEI = (() => {
     TR.d.weiBonusSeen = 1; TR.save(); bonusMark(); coinRain();
   }).observe($('shop'), { attributes:true, attributeFilter:['hidden', 'class'] });
 
-  // ---------- accueil « WEI EDITION » : les 4 étoiles des équipes dans le blason, animées ----------
+  // ---------- bouton « Installer l'appli » sur Android ----------
+  // Chrome ne propose pas toujours l'installation automatique (critères d'engagement, appli déjà vue…) :
+  // sans proposition au bout de 3 s, le bouton reste visible et explique comment installer depuis le menu de Chrome
+  { const ib = $('install'), android = /android/i.test(navigator.userAgent);
+    const standalone = matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches || navigator.standalone;
+    let offered = false;
+    addEventListener('beforeinstallprompt', () => { offered = true; });
+    addEventListener('appinstalled', () => { offered = true; ib.hidden = true; });
+    if (android && !standalone) setTimeout(() => { if (!offered && state === 'title') ib.hidden = false; }, 3000);
+    ib.addEventListener('click', e => { if (android && !offered) toast(txt('wei.installHelp')); }); }
+
+  // ---------- Stelly aux couleurs de son équipe, accueil « WEI EDITION » : les 4 étoiles des équipes dans le blason, animées ----------
   // les grandes images de Stelly de l'accueil (HERO) sont remplacées par le groupe des 4 étoiles, redessiné à chaque image
   { const css3 = document.createElement('style');
     css3.textContent = '#weied{ position:absolute; left:0; right:0; top:calc((var(--ry) + 18)*var(--s)*1px); z-index:2; display:flex; justify-content:center; gap:calc(var(--s)*1px); font-family:var(--num); font-size:calc(var(--s)*9px); letter-spacing:.04em;'

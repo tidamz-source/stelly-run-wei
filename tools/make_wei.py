@@ -84,6 +84,7 @@ WT = '''  // édition équipes
   "wei.sent":     { fr:"Score envoyé pour l’équipe {t}", en:"Score sent for team {t}", es:"Puntuación enviada para el equipo {t}" },
   "wei.record":   { fr:"Record perso ! Envoyé pour l’équipe {t}", en:"Personal best! Sent for team {t}", es:"¡Récord personal! Enviado para el equipo {t}" },
   "wei.rank":     { fr:"ton équipe est {n}e", en:"your team is #{n}", es:"tu equipo va {n}.º" },
+  "wei.installHelp": { fr:"Menu ⋮ de Chrome → « Installer l’appli »", en:"Chrome ⋮ menu → “Install app”", es:"Menú ⋮ de Chrome → «Instalar app»" },
   "wei.sub":      { fr:"Chaque partie compte pour ta couleur", en:"Every run counts for your colour", es:"Cada partida cuenta para tu color" },
   "wei.players":  { fr:"{n} joueurs", en:"{n} players", es:"{n} jugadores" },
   "wei.player":   { fr:"{n} joueur", en:"{n} player", es:"{n} jugador" },
@@ -107,7 +108,7 @@ sw = re.sub(r"const VERSION = '[^']*';", f"const VERSION = 'stelly-run-wei-{APP}
 sw = once(sw, "keys.filter(k => k !== VERSION)", "keys.filter(k => k.startsWith('stelly-run-wei-') && k !== VERSION)", 'sw : caches')
 sw = once(sw, "  './index.html',\n", "  './index.html',\n  './equipes.html',\n  './stats.html',\n", 'sw : equipes.html')
 man = json.loads((SRC / 'manifest.webmanifest').read_text(encoding='utf-8'))
-man.update({ 'name': 'Stelly Run · Équipes', 'short_name': 'Stelly Équipes', 'description': 'Stelly Run, édition équipes : chaque partie compte pour ton équipe !' })
+man.update({ 'scope': './', 'name': 'Stelly Run · Équipes', 'short_name': 'Stelly Équipes', 'description': 'Stelly Run, édition équipes : chaque partie compte pour ton équipe !' })
 
 # ---------- garde-fous ----------
 if 'AKfycbwJCiKyJ7zyoGK7BEGem0crHldaZgvWSWcj6KE' in idx: sys.exit('[wei] l\'URL du classement du jeu officiel est restée dans index.html')
