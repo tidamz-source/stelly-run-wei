@@ -2055,7 +2055,7 @@ TR.retro(); refreshTrophyBadge();
 /* ================= Classement en ligne (Google Sheet) ================= */
 // classement des équipes (backend/Code.gs) ; le serveur du jeu officiel n'est jamais appelé
 const WEI_URL = "https://script.google.com/macros/s/AKfycbxkc6WIeFh6l9JiJNZJbhM2PDET4ZdB8MG7j7cRTZzkDpRcm-Kpuz39TwXzVeJzAwim/exec";
-const WEI_REV = '7.25-32';
+const WEI_REV = '7.25-33';
 const WEI_SECRET = 'wei-st3lly-4q8z';
 const LB_URL = WEI_URL;
 const LB_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -4607,7 +4607,7 @@ const WEI = (() => {
     }; }
   // « Tout remettre à zéro » : on repart aussi du choix d'équipe (et du bonus de bienvenue)
   { const r0 = resetAll;
-    resetAll = function(){ r0.apply(this, arguments); delete TR.d.weiBonus; delete TR.d.weiBonusSeen; TR.save(); try { ['stellyrunwei_onb1', 'stellyrunwei_onbseen', K_TEAM, K_NAME].forEach(k => localStorage.removeItem(k)); } catch(e){} bonusMark(); paint(); repaintStelly(); };
+    resetAll = function(){ r0.apply(this, arguments); /* édition équipe : les stats d'avant le reset ne sont plus renvoyées */ delete TR.d.arch; try { localStorage.removeItem('stellyrunwei_statspending'); } catch(e){} delete TR.d.weiBonus; delete TR.d.weiBonusSeen; TR.save(); try { ['stellyrunwei_onb1', 'stellyrunwei_onbseen', K_TEAM, K_NAME].forEach(k => localStorage.removeItem(k)); } catch(e){} bonusMark(); paint(); repaintStelly(); };
     new MutationObserver(() => { if (!setUI.isOpen() && state === 'title' && (!team() || !name()) && !isOpen) setTimeout(() => { if (!setUI.isOpen() && (!team() || !name()) && !isOpen) open(); }, 500); })
       .observe($('settings'), { attributes:true, attributeFilter:['class', 'hidden'] }); }
 

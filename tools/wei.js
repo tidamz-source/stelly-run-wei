@@ -299,7 +299,7 @@ const WEI = (() => {
     }; }
   // « Tout remettre à zéro » : on repart aussi du choix d'équipe (et du bonus de bienvenue)
   { const r0 = resetAll;
-    resetAll = function(){ r0.apply(this, arguments); delete TR.d.weiBonus; delete TR.d.weiBonusSeen; TR.save(); try { ['stellyrunwei_onb1', 'stellyrunwei_onbseen', K_TEAM, K_NAME].forEach(k => localStorage.removeItem(k)); } catch(e){} bonusMark(); paint(); repaintStelly(); };
+    resetAll = function(){ r0.apply(this, arguments); /* édition équipe : les stats d'avant le reset ne sont plus renvoyées */ delete TR.d.arch; try { localStorage.removeItem('stellyrunwei_statspending'); } catch(e){} delete TR.d.weiBonus; delete TR.d.weiBonusSeen; TR.save(); try { ['stellyrunwei_onb1', 'stellyrunwei_onbseen', K_TEAM, K_NAME].forEach(k => localStorage.removeItem(k)); } catch(e){} bonusMark(); paint(); repaintStelly(); };
     new MutationObserver(() => { if (!setUI.isOpen() && state === 'title' && (!team() || !name()) && !isOpen) setTimeout(() => { if (!setUI.isOpen() && (!team() || !name()) && !isOpen) open(); }, 500); })
       .observe($('settings'), { attributes:true, attributeFilter:['class', 'hidden'] }); }
 
